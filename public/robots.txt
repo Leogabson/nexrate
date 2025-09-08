@@ -1,5 +1,9 @@
+# *
 User-agent: *
 Allow: /
 
-# Optional: Add your sitemap when you create one later
-# Sitemap: https://your-domain.com/sitemap.xml
+# Host
+Host: https://nexrate.vercel.app
+
+# Sitemaps
+Sitemap: https://nexrate.vercel.app/sitemap.xml

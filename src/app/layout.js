@@ -58,7 +58,7 @@ export const metadata = {
     title: "NexRate – Swap Crypto & Gift Cards Seamlessly",
     description:
       "The smarter way to exchange crypto & gift cards with AI-powered arbitrage and smart rate lock. Join our waitlist today!",
-    url: "https://NexRate.vercel.app", // Update with your actual domain
+    url: "https://nexrate.vercel.app", // Update with your actual domain
     siteName: "NexRate",
     images: [
       {
@@ -111,7 +111,7 @@ export default function RootLayout({ children }) {
         {/* Additional meta tags for better SEO */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="format-detection" content="telephone=no" />
-        <link rel="canonical" href="https://NexRate.vercel.app" />
+        <link rel="canonical" href="https://nexrate.vercel.app" />
 
         {/* Favicon and app icons */}
         <link rel="icon" href="/favicon.ico" />

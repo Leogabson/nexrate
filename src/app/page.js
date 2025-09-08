@@ -17,10 +17,16 @@ export default function Home() {
 
       {/* Hero Section */}
       <Hero />
+
       {/* About Section */}
       <About />
+
       {/* How It Works Section */}
       <HowItWorks />
+
+      {/* Features */}
+      <Features />
+
       {/* Waitlis section */}
       <Waitlist />
 
