@@ -1,14 +1,24 @@
 "use client";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, JSX, FormEvent, ChangeEvent, KeyboardEvent } from "react";
 
-export default function Contact() {
-  const [email, setEmail] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [message, setMessage] = useState("");
-  const [messageType, setMessageType] = useState(""); // 'success', 'error', 'info'
+// Define types for the component
+type MessageType = "success" | "error" | "info" | "";
 
-  const handleSubmit = async (e) => {
+interface WaitlistResponse {
+  success: boolean;
+  error?: string;
+}
+
+export default function Waitlist(): JSX.Element {
+  const [email, setEmail] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string>("");
+  const [messageType, setMessageType] = useState<MessageType>("");
+
+  const handleSubmit = async (
+    e: FormEvent<HTMLFormElement | HTMLButtonElement>
+  ): Promise<void> => {
     e.preventDefault();
 
     if (!email.trim()) {
@@ -28,7 +38,7 @@ export default function Contact() {
         body: JSON.stringify({ email }),
       });
 
-      const data = await res.json();
+      const data: WaitlistResponse = await res.json();
 
       if (data.success === true) {
         setMessage(
@@ -52,8 +62,17 @@ export default function Contact() {
     }
   };
 
+  const handleEmailChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setEmail(e.target.value);
+  };
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
+    if (e.key === "Enter") {
+      handleSubmit(e as any);
+    }
+  };
+
   return (
-    /* Waitlist Section */
     <section id="contact" className="py-16 px-6 md:px-16">
       <div className="bg-gradient-to-r from-cyan-400 to-purple-500 rounded-2xl p-10 text-center text-white max-w-2xl mx-auto">
         <h3 className="text-3xl font-bold">Start Trading with NexRate Today</h3>
@@ -63,14 +82,17 @@ export default function Contact() {
         </p>
 
         {/* Waitlist Form */}
-        <div className="mt-6 flex flex-col sm:flex-row items-center gap-4 justify-center">
+        <form
+          onSubmit={handleSubmit}
+          className="mt-6 flex flex-col sm:flex-row items-center gap-4 justify-center"
+        >
           <input
             type="email"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleEmailChange}
             placeholder="Enter your email"
             disabled={isLoading}
-            onKeyDown={(e) => e.key === "Enter" && handleSubmit(e)}
+            onKeyDown={handleKeyDown}
             className={`
               flex-1 px-4 py-3 rounded-lg text-black w-full sm:w-auto
               disabled:bg-gray-100 disabled:cursor-not-allowed
@@ -79,7 +101,7 @@ export default function Contact() {
             `}
           />
           <button
-            onClick={handleSubmit}
+            type="submit"
             disabled={isLoading || !email.trim()}
             className={`
               font-semibold px-6 py-3 rounded-lg transition-all duration-200
@@ -120,7 +142,7 @@ export default function Contact() {
               "Join Waitlist"
             )}
           </button>
-        </div>
+        </form>
 
         {/* Inline Message */}
         {message && (

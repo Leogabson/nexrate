@@ -1,5 +1,7 @@
+import { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SessionProvider } from "../components/SessionProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -11,12 +13,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ✅ Strongly typed metadata
 export const metadata = {
-  title: "NexRate – Faster, Smarter, Safer Crypto & Giftcard Exchange",
+  metadataBase: new URL("https://nexrate.vercel.app"),
+  title: "NexRate — Faster, Smarter, Safer Crypto & Giftcard Exchange",
   description:
-    "Join NexRate – the modern platform to swap, buy, and sell crypto & gift cards. With AI-powered arbitrage, smart rate lock, and more. Get early access now!",
+    "Join NexRate — the modern platform to swap, buy, and sell crypto & gift cards. With AI-powered arbitrage, smart rate lock, and more. Get early access now!",
 
-  // Additional SEO meta tags
   keywords: [
     "crypto exchange",
     "gift card trading",
@@ -33,14 +36,12 @@ export const metadata = {
   creator: "NexRate",
   publisher: "NexRate",
 
-  // Verification and site ownership
   verification: {
     // google: "your-google-site-verification-code",
     // yandex: "your-yandex-verification-code",
     // bing: "your-bing-verification-code",
   },
 
-  // Robots and indexing
   robots: {
     index: true,
     follow: true,
@@ -53,16 +54,15 @@ export const metadata = {
     },
   },
 
-  // Open Graph
   openGraph: {
-    title: "NexRate – Swap Crypto & Gift Cards Seamlessly",
+    title: "NexRate — Swap Crypto & Gift Cards Seamlessly",
     description:
       "The smarter way to exchange crypto & gift cards with AI-powered arbitrage and smart rate lock. Join our waitlist today!",
-    url: "https://nexrate.vercel.app", // Update with your actual domain
+    url: "https://nexrate.vercel.app",
     siteName: "NexRate",
     images: [
       {
-        url: "/og-image.png", // Make sure this exists in public/
+        url: "/og-image.png",
         width: 1200,
         height: 630,
         alt: "NexRate - Crypto & Gift Card Exchange Platform",
@@ -73,38 +73,31 @@ export const metadata = {
     type: "website",
   },
 
-  // Twitter/X Cards
   twitter: {
     card: "summary_large_image",
-    title: "NexRate – Swap Crypto & Gift Cards Seamlessly",
+    title: "NexRate — Swap Crypto & Gift Cards Seamlessly",
     description:
       "The smarter way to exchange crypto & gift cards with AI-powered features. Join our waitlist today!",
-    images: ["/twitter-image.png"], // Could be same as og-image.png
-    creator: "@Nexrate", // Your actual Twitter handle
+    images: ["/twitter-image.png"],
+    creator: "@Nexrate",
     site: "@Nexrate",
   },
 
-  // App-specific metadata
   applicationName: "NexRate",
   referrer: "origin-when-cross-origin",
 
-  // Color scheme and theming
-  colorScheme: "light",
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#06b6d4" }, // cyan
-    { media: "(prefers-color-scheme: dark)", color: "#0891b2" },
-  ],
-
-  // Manifest for PWA (optional)
   manifest: "/site.webmanifest",
 
-  // Additional structured data could be added here
   other: {
-    "google-site-verification": "pending", // Add when you verify with Google
+    "google-site-verification": "pending",
   },
 };
 
-export default function RootLayout({ children }) {
+export const viewport = {
+  colorScheme: "light dark", // supports both light and dark mode
+};
+
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en">
       <head>
@@ -144,7 +137,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );

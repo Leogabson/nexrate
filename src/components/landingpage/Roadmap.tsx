@@ -1,9 +1,18 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
 import Image from "next/image";
+import React, { JSX } from "react";
 
-export default function Roadmap() {
-  const roadmap = [
+// Define interface for roadmap items
+interface RoadmapItem {
+  phase: string;
+  title: string;
+  desc: string;
+  status: string;
+}
+
+export default function Roadmap(): JSX.Element {
+  const roadmap: RoadmapItem[] = [
     {
       phase: "Phase 1",
       title: "Launch Waitlist + MVP",
@@ -36,8 +45,8 @@ export default function Roadmap() {
     },
   ];
 
-  // Animation variants
-  const containerVariants = {
+  // Animation variants with proper typing
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -48,7 +57,7 @@ export default function Roadmap() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: {
       opacity: 0,
       y: -50,
@@ -65,7 +74,7 @@ export default function Roadmap() {
     },
   };
 
-  const dotVariants = {
+  const dotVariants: Variants = {
     hidden: {
       scale: 0,
       opacity: 0,
@@ -82,7 +91,7 @@ export default function Roadmap() {
     },
   };
 
-  const cardVariants = {
+  const cardVariants: Variants = {
     hidden: {
       opacity: 0,
       y: 30,
@@ -100,7 +109,7 @@ export default function Roadmap() {
     },
   };
 
-  const lineVariants = {
+  const lineVariants: Variants = {
     hidden: {
       scaleX: 0,
       scaleY: 0,
@@ -173,7 +182,7 @@ export default function Roadmap() {
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
           >
-            {roadmap.map((item, index) => (
+            {roadmap.map((item: RoadmapItem, index: number) => (
               <motion.div
                 key={index}
                 className="mb-10 md:mb-0 md:w-1/5 flex flex-col items-start md:items-center relative"

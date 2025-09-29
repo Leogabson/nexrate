@@ -1,9 +1,17 @@
 "use client";
-import { motion } from "framer-motion";
+import { motion, Variants } from "framer-motion";
+import React, { JSX } from "react";
 
-export default function HowItWorks() {
-  // Animation variants
-  const containerVariants = {
+// Define interface for step data
+interface Step {
+  number: string;
+  title: string;
+  description: string;
+}
+
+export default function HowItWorks(): JSX.Element {
+  // Animation variants with proper typing
+  const containerVariants: Variants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
@@ -14,7 +22,7 @@ export default function HowItWorks() {
     },
   };
 
-  const itemVariants = {
+  const itemVariants: Variants = {
     hidden: {
       opacity: 0,
       y: 30,
@@ -29,7 +37,7 @@ export default function HowItWorks() {
     },
   };
 
-  const numberVariants = {
+  const numberVariants: Variants = {
     hidden: {
       scale: 0,
       opacity: 0,
@@ -46,7 +54,7 @@ export default function HowItWorks() {
     },
   };
 
-  const steps = [
+  const steps: Step[] = [
     {
       number: "1",
       title: "Sign Up",
@@ -87,7 +95,7 @@ export default function HowItWorks() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
       >
-        {steps.map((step, index) => (
+        {steps.map((step: Step, index: number) => (
           <motion.div
             key={step.number}
             variants={itemVariants}
