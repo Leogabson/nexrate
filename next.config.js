@@ -12,9 +12,6 @@ const nextConfig = {
       },
     ],
   },
-  experimental: {
-    optimizeCss: false, // 🚫 disables lightningcss to fix Vercel build error
-  },
 };
 
 module.exports = nextConfig;
