@@ -87,11 +87,23 @@ export default function Hero() {
         className="max-w-xl text-center md:text-left"
         variants={slideInFromLeft}
       >
+        {/* Updated Badge */}
+        <motion.div
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/30 rounded-full px-4 py-2 mb-6"
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.5, duration: 0.5 }}
+        >
+          <span className="text-cyan-400 text-sm font-semibold">
+            🚀 Powered by AI + Blockchain + BlockDAG
+          </span>
+        </motion.div>
+
         <motion.h2
           className="text-4xl md:text-5xl font-bold leading-tight"
           variants={fadeInUp}
         >
-          Swap, Buy & Sell{" "}
+          Smarter Trading with{" "}
           <motion.span
             className="text-cyan-400"
             whileHover={{
@@ -99,22 +111,44 @@ export default function Hero() {
               transition: { duration: 0.2 },
             }}
           >
-            Crypto
-          </motion.span>{" "}
-          and Gift Cards Seamlessly
+            AI & Blockchain
+          </motion.span>
         </motion.h2>
 
-        <motion.p className="mt-4 text-gray-400" variants={fadeInUp}>
-          Fast, secure, and reliable platform for your digital transactions.
+        <motion.p className="mt-4 text-gray-300 text-lg" variants={fadeInUp}>
+          Join the first AI-powered crypto & gift card platform introducing the{" "}
+          <span className="text-purple-400 font-semibold">
+            NXRATE Utility Token
+          </span>
+          . Experience faster, safer, and smarter digital transactions.
         </motion.p>
 
+        {/* Key Features Highlights */}
         <motion.div
-          className="mt-6 flex gap-4 justify-center md:justify-start"
+          className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start"
+          variants={fadeInUp}
+        >
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <span className="text-cyan-400">⚡</span>
+            <span>BlockDAG Speed</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <span className="text-purple-400">🔒</span>
+            <span>On-Chain Security</span>
+          </div>
+          <div className="flex items-center gap-2 text-sm text-gray-400">
+            <span className="text-cyan-400">💎</span>
+            <span>Earn NXRATE Rewards</span>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mt-8 flex gap-4 justify-center md:justify-start"
           variants={fadeInUp}
         >
           <motion.button
             onClick={handleGetStartedClick}
-            className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-6 py-3 rounded-lg hover:opacity-90 relative overflow-hidden"
+            className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-6 py-3 rounded-lg hover:opacity-90 relative overflow-hidden font-semibold"
             variants={buttonVariants}
             whileHover={{
               scale: 1.05,
@@ -129,7 +163,7 @@ export default function Hero() {
               whileHover={{ x: 5 }}
               transition={{ duration: 0.2 }}
             >
-              Get Started
+              Be First to Earn NXRATE Token
             </motion.span>
           </motion.button>
 
@@ -153,6 +187,16 @@ export default function Hero() {
               Learn More
             </motion.span>
           </motion.button>
+        </motion.div>
+
+        {/* Trust Indicators */}
+        <motion.div
+          className="mt-8 text-sm text-gray-400"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1, duration: 0.5 }}
+        >
+          <p>Join the waitlist • Early access rewards • No spam</p>
         </motion.div>
       </motion.div>
 

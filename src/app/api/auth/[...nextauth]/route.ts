@@ -6,9 +6,9 @@ import NextAuth, {
 } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { MongoDBAdapter } from "@next-auth/mongodb-adapter";
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
+import { ObjectId } from "mongodb"; // ✅ ADDED: Import ObjectId for proper queries
 
 // Extend the Profile type to include Google-specific fields
 interface GoogleProfile extends Profile {
@@ -18,7 +18,8 @@ interface GoogleProfile extends Profile {
 }
 
 const handler = NextAuth({
-  adapter: MongoDBAdapter(clientPromise),
+  // ✅ REMOVED: MongoDBAdapter - incompatible with JWT strategy
+  // We'll manage user/account creation manually in callbacks
 
   providers: [
     GoogleProvider({
@@ -43,10 +44,21 @@ const handler = NextAuth({
           .findOne({ email: credentials.email });
 
         if (!user) throw new Error("No user found with this email");
-        if (!user.password)
+
+        // Check if user signed up with Google
+        if (user.provider === "google" && !user.password) {
+          throw new Error(
+            "This account uses Google sign-in. Please use 'Continue with Google'"
+          );
+        }
+
+        if (!user.password) {
           throw new Error("Account exists via Google. Use Google sign-in.");
-        if (!user.verified && user.provider !== "google")
+        }
+
+        if (!user.verified) {
           throw new Error("Please verify your email first.");
+        }
 
         const isValid = await bcrypt.compare(
           credentials.password,
@@ -54,6 +66,7 @@ const handler = NextAuth({
         );
 
         if (!isValid) throw new Error("Invalid password");
+
         return {
           id: user._id.toString(),
           email: user.email,
@@ -65,122 +78,175 @@ const handler = NextAuth({
 
   callbacks: {
     async signIn(params: any) {
-      const { user, account, profile, callbackUrl } = params;
-      const client = await clientPromise;
-      const db = client.db("nexrate");
-      console.log("Sign-in attempt:", { user, account, profile, callbackUrl }); // Debug log
+      const { user, account, profile } = params;
 
+      // ✅ Allow credentials sign-in (handled by authorize())
+      if (account?.provider === "credentials") {
+        return true;
+      }
+
+      // ✅ Handle Google OAuth sign-in
       if (account?.provider === "google") {
-        const googleProfile = profile as GoogleProfile;
-        const existingUser = await db
-          .collection("users")
-          .findOne({ email: user.email });
-        const existingAccount = await db.collection("accounts").findOne({
-          provider: account.provider,
-          providerAccountId: account.providerAccountId,
-        });
+        try {
+          const client = await clientPromise;
+          const db = client.db("nexrate");
+          const googleProfile = profile as GoogleProfile;
 
-        console.log("Existing user:", existingUser);
-        console.log("Existing account:", existingAccount);
+          const existingUser = await db
+            .collection("users")
+            .findOne({ email: user.email });
 
-        if (existingUser) {
-          const userProvider = existingUser.provider || "none";
-          if (userProvider !== account.provider && !existingUser.verified) {
-            console.log("Blocking due to different provider or unverified:", {
-              userProvider,
-              accountProvider: account.provider,
-            });
-            return `/auth/signin?error=Account linked to a different provider or not verified. Please use that method or verify your email.`;
-          }
-          await db.collection("users").updateOne(
-            { email: user.email },
-            {
-              $set: {
-                firstName: googleProfile.given_name || existingUser.firstName,
-                lastName: googleProfile.family_name || existingUser.lastName,
-                image: googleProfile.picture || existingUser.image,
-                emailVerified: new Date(),
-                provider: account.provider,
-                verified: true, // Mark as verified on Google sign-in
-              },
+          if (existingUser) {
+            // ✅ Check if user exists with different provider and is unverified
+            if (
+              existingUser.provider &&
+              existingUser.provider !== "google" &&
+              !existingUser.verified
+            ) {
+              // Block sign-in and show error
+              return "/auth/signin?error=Please verify your email first or use your original sign-in method";
             }
-          );
-          if (
-            existingAccount &&
-            !existingAccount.userId.equals(existingUser._id)
-          ) {
-            await db
-              .collection("accounts")
-              .updateOne(
-                { _id: existingAccount._id },
-                { $set: { userId: existingUser._id } }
-              );
-          }
-        } else if (existingAccount) {
-          console.log("Linking orphaned account to new user");
-          const newUser = await db.collection("users").insertOne({
-            email: user.email,
-            firstName: googleProfile.given_name || "",
-            lastName: googleProfile.family_name || "",
-            image: googleProfile.picture || null,
-            emailVerified: new Date(),
-            createdAt: new Date(),
-            provider: account.provider,
-            verified: true,
-          });
-          await db
-            .collection("accounts")
-            .updateOne(
-              { _id: existingAccount._id },
-              { $set: { userId: newUser.insertedId } }
+
+            // Update existing user with Google info
+            await db.collection("users").updateOne(
+              { email: user.email },
+              {
+                $set: {
+                  firstName: googleProfile.given_name || existingUser.firstName,
+                  lastName: googleProfile.family_name || existingUser.lastName,
+                  image: googleProfile.picture || existingUser.image,
+                  emailVerified: new Date(),
+                  provider: "google", // Update to Google provider
+                  verified: true, // Mark as verified
+                },
+              }
             );
-        } else {
-          console.log("Creating new user and account:", user.email);
-          const newUser = await db.collection("users").insertOne({
-            email: user.email,
-            firstName: googleProfile.given_name || "",
-            lastName: googleProfile.family_name || "",
-            image: googleProfile.picture || null,
-            emailVerified: new Date(),
-            createdAt: new Date(),
-            provider: account.provider,
-            verified: true,
-          });
-          await db.collection("accounts").insertOne({
-            userId: newUser.insertedId,
+          } else {
+            // Create new user for Google sign-in
+            const newUser = await db.collection("users").insertOne({
+              email: user.email,
+              firstName: googleProfile.given_name || "",
+              lastName: googleProfile.family_name || "",
+              image: googleProfile.picture || null,
+              emailVerified: new Date(),
+              createdAt: new Date(),
+              provider: "google",
+              verified: true,
+            });
+
+            // Store the new user ID for account linking
+            user.id = newUser.insertedId.toString();
+          }
+
+          // ✅ Store/update Google OAuth account info
+          const existingAccount = await db.collection("accounts").findOne({
             provider: account.provider,
             providerAccountId: account.providerAccountId,
-            type: "oauth",
-            refresh_token: account.refresh_token,
-            access_token: account.access_token,
-            expires_at: account.expires_at,
-            scope: account.scope,
-            token_type: account.token_type,
-            id_token: account.id_token,
           });
+
+          if (existingAccount) {
+            // Update existing account tokens
+            await db.collection("accounts").updateOne(
+              { _id: existingAccount._id },
+              {
+                $set: {
+                  refresh_token: account.refresh_token,
+                  access_token: account.access_token,
+                  expires_at: account.expires_at,
+                  scope: account.scope,
+                  token_type: account.token_type,
+                  id_token: account.id_token,
+                },
+              }
+            );
+          } else {
+            // Create new account record
+            const userId = existingUser?._id || new ObjectId(user.id);
+            await db.collection("accounts").insertOne({
+              userId: userId,
+              provider: account.provider,
+              providerAccountId: account.providerAccountId,
+              type: "oauth",
+              refresh_token: account.refresh_token,
+              access_token: account.access_token,
+              expires_at: account.expires_at,
+              scope: account.scope,
+              token_type: account.token_type,
+              id_token: account.id_token,
+            });
+          }
+
+          return true;
+        } catch (error) {
+          if (process.env.NODE_ENV === "development") {
+            console.error("Google sign-in error:", error);
+          }
+          return "/auth/signin?error=Sign in failed. Please try again";
         }
       }
 
-      console.log("Returning callbackUrl:", callbackUrl || "/dashboard");
-      return callbackUrl || "/dashboard"; // Use provided callbackUrl or default to /dashboard
+      // Default: allow sign-in
+      return true;
     },
-    async session({ session, token }) {
-      console.log("Session callback:", { session, token });
-      if (token?.sub) {
-        session.user.id = token.sub;
-        session.user.name =
-          `${token.firstName || "User"} ${token.lastName || ""}`.trim() ||
-          undefined;
-      }
-      return session;
-    },
-    async jwt({ token, user }) {
+
+    async jwt({ token, user, account }) {
+      // Store complete user info in JWT on first sign-in
       if (user) {
         token.sub = user.id;
-        token.firstName = (user as any).firstName;
-        token.lastName = (user as any).lastName;
+
+        // Parse name if it's a full name string
+        const nameParts = user.name?.split(" ") || [];
+        token.firstName = nameParts[0] || "";
+        token.lastName = nameParts.slice(1).join(" ") || "";
+        token.email = user.email;
+        token.image = user.image;
       }
+
+      // Refresh user data from DB periodically with correct ObjectId query
+      // This ensures name changes reflect without re-login
+      if (token.sub && !user) {
+        try {
+          // Only refresh if token.sub is a valid ObjectId string (24 hex chars)
+          if (
+            typeof token.sub === "string" &&
+            /^[0-9a-fA-F]{24}$/.test(token.sub)
+          ) {
+            const client = await clientPromise;
+            const db = client.db("nexrate");
+
+            const dbUser = await db.collection("users").findOne({
+              _id: new ObjectId(token.sub),
+            });
+
+            if (dbUser) {
+              token.firstName = dbUser.firstName;
+              token.lastName = dbUser.lastName;
+              token.email = dbUser.email;
+              token.image = dbUser.image;
+            }
+          }
+        } catch (error) {
+          // If ObjectId conversion fails or DB error, keep existing token data
+          if (process.env.NODE_ENV === "development") {
+            console.error("JWT refresh error:", error);
+          }
+        }
+      }
+
       return token;
+    },
+
+    async session({ session, token }) {
+      // Build session from token data
+      if (token?.sub) {
+        session.user.id = token.sub;
+        session.user.email = token.email as string;
+        session.user.name =
+          `${token.firstName || ""} ${token.lastName || ""}`.trim() ||
+          undefined;
+        session.user.image = (token.image as string) || undefined;
+      }
+      return session;
     },
   },
 
@@ -191,6 +257,7 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
+    maxAge: 30 * 24 * 60 * 60, // ✅ ADDED: 30 days session
   },
   secret: process.env.NEXTAUTH_SECRET,
 });

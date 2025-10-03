@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
+import crypto from "crypto"; // ✅ ADDED: Import crypto module
 import { sendVerificationEmail } from "@/lib/email";
 
 export async function POST(req: Request) {
@@ -35,7 +36,7 @@ export async function POST(req: Request) {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const verificationToken = crypto.randomUUID();
+    const verificationToken = crypto.randomUUID(); // ✅ Now this works
 
     await users.insertOne({
       firstName,
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
       verified: false,
       verificationToken,
       createdAt: new Date(),
+      provider: "credentials", // ✅ ADDED: Set provider field for consistency
     });
 
     await sendVerificationEmail(email, verificationToken);

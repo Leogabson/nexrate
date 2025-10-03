@@ -76,7 +76,7 @@ export default function SignupPage() {
     <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-900 via-black to-gray-800">
       <div className="w-full max-w-md bg-white/5 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-gray-700">
         <div className="flex items-center justify-center mb-6">
-          <Image src="/logo.png" alt="NexRate" width={40} height={40} />
+          <Image src="/logo.jpg" alt="NexRate" width={40} height={40} />
           <span className="text-2xl font-bold text-cyan-400">NexRate</span>
         </div>
 

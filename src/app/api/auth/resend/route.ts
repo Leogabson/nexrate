@@ -20,21 +20,20 @@ export async function POST(request: Request) {
 
     if (!user) {
       return NextResponse.json(
-        { error: "No account found with this email." },
+        { error: "No account found with this email" },
         { status: 404 }
       );
     }
 
     if (user.verified) {
       return NextResponse.json(
-        { message: "Account already verified. You can log in now." },
-        { status: 200 }
+        { error: "Account already verified. You can log in now" },
+        { status: 400 }
       );
     }
 
-    // Generate fresh token
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    const verificationTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 min
+    const verificationTokenExpires = new Date(Date.now() + 15 * 60 * 1000);
 
     await users.updateOne(
       { _id: user._id },
@@ -46,17 +45,18 @@ export async function POST(request: Request) {
       }
     );
 
-    // Send new email
     await sendVerificationEmail(email, verificationToken);
 
     return NextResponse.json(
-      { message: "Verification email resent successfully." },
+      { message: "Verification email resent successfully" },
       { status: 200 }
     );
   } catch (error) {
-    console.error("Resend verification error:", error);
+    if (process.env.NODE_ENV === "development") {
+      console.error("Resend verification error:", error);
+    }
     return NextResponse.json(
-      { error: "Something went wrong. Please try again later." },
+      { error: "Something went wrong. Please try again later" },
       { status: 500 }
     );
   }

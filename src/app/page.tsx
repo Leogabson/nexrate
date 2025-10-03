@@ -7,6 +7,7 @@ import Hero from "@/components/landingpage/Hero";
 import About from "@/components/landingpage/About";
 import Roadmap from "@/components/landingpage/Roadmap";
 import Waitlist from "@/components/landingpage/Waitlist";
+import TokenTeaser from "@/components/landingpage/TokenTeaser";
 // import image from "next/image";
 
 export default function Home() {
@@ -22,9 +23,11 @@ export default function Home() {
 
       <Features />
 
-      <Waitlist />
-
       <Roadmap />
+
+      <TokenTeaser />
+
+      <Waitlist />
 
       <Footer />
     </div>
