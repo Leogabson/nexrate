@@ -1,82 +1,244 @@
 "use client";
 import { motion } from "framer-motion";
+import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="bg-[#0B0F19] border-t border-[#1F2937] py-10 px-6 md:px-16">
-      <div className="max-w-6xl mx-auto grid gap-8 md:grid-cols-4 text-gray-400">
-        {/* Brand */}
-        <div>
-          <h2 className="text-2xl font-bold text-cyan-400">NexRate</h2>
-          <p className="mt-3 text-sm">
-            The smarter way to swap, buy, and sell crypto & gift cards. 🚀
-          </p>
-        </div>
-
-        {/* Links */}
-        <div>
-          <h3 className="text-lg font-semibold text-purple-400">Quick Links</h3>
-          <ul className="mt-3 space-y-2">
-            <li>
-              <a href="#" className="hover:text-cyan-400">
-                Home
-              </a>
-            </li>
-            <li>
-              <a href="#features" className="hover:text-cyan-400">
-                Features
-              </a>
-            </li>
-            <li>
-              <a href="#how" className="hover:text-cyan-400">
-                How It Works
-              </a>
-            </li>
-            <li>
-              <a href="#contact" className="hover:text-cyan-400">
-                Contact
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Legal */}
-        <div>
-          <h3 className="text-lg font-semibold text-purple-400">Legal</h3>
-          <ul className="mt-3 space-y-2">
-            <li>
-              <a href="#" className="hover:text-cyan-400">
-                Privacy Policy
-              </a>
-            </li>
-            <li>
-              <a href="#" className="hover:text-cyan-400">
-                Terms of Service
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        {/* Socials */}
-        <div>
-          <h3 className="text-lg font-semibold text-purple-400">Follow Us</h3>
-          <div className="flex mt-3 space-x-4 text-xl">
-            <a href="https://x.com/Nexrate" className="hover:text-cyan-400">
-              <i className="fab fa-twitter"></i>
-            </a>
-            <a href="https://t.me/NexRates" className="hover:text-cyan-400">
-              <i className="fab fa-telegram"></i>
-            </a>
-            <a href="#" className="hover:text-cyan-400">
-              <i className="fab fa-discord"></i>
-            </a>
-          </div>
-        </div>
+    <footer className="bg-[#0B0F19] border-t border-gray-800 py-12 px-6 md:px-16 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-purple-500/5 rounded-full blur-3xl"></div>
       </div>
 
-      {/* Bottom Note */}
-      <div className="mt-10 text-center text-sm text-gray-500">
-        © {new Date().getFullYear()} NexRate. All rights reserved.
+      <div className="max-w-7xl mx-auto relative z-10">
+        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4 text-gray-400 mb-8">
+          {/* Brand */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            viewport={{ once: true }}
+          >
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-10 h-10 rounded-lg overflow-hidden">
+                <Image
+                  src="/logo.jpg"
+                  alt="NexRate"
+                  width={40}
+                  height={40}
+                  className="object-cover"
+                />
+              </div>
+              <h2 className="text-2xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+                NexRate
+              </h2>
+            </div>
+            <p className="text-sm text-gray-400 leading-relaxed">
+              The smarter way to trade crypto & gift cards. Powered by AI,
+              secured by Blockchain, accelerated by BlockDAG. 🚀
+            </p>
+          </motion.div>
+
+          {/* Quick Links */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-lg font-semibold text-cyan-400 mb-4">
+              Quick Links
+            </h3>
+            <ul className="space-y-2.5">
+              <li>
+                <a
+                  href="#home"
+                  className="hover:text-cyan-400 transition-colors text-sm"
+                >
+                  Home
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#about"
+                  className="hover:text-cyan-400 transition-colors text-sm"
+                >
+                  About
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#features"
+                  className="hover:text-cyan-400 transition-colors text-sm"
+                >
+                  Features
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#how"
+                  className="hover:text-cyan-400 transition-colors text-sm"
+                >
+                  How It Works
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#roadmap"
+                  className="hover:text-cyan-400 transition-colors text-sm"
+                >
+                  Roadmap
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#contact"
+                  className="hover:text-cyan-400 transition-colors text-sm"
+                >
+                  Join Waitlist
+                </a>
+              </li>
+            </ul>
+          </motion.div>
+
+          {/* Legal & Resources */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-lg font-semibold text-purple-400 mb-4">
+              Legal & Resources
+            </h3>
+            <ul className="space-y-2.5">
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-purple-400 transition-colors text-sm"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-purple-400 transition-colors text-sm"
+                >
+                  Terms of Service
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-purple-400 transition-colors text-sm flex items-center gap-2"
+                >
+                  Whitepaper
+                  <span className="text-xs bg-cyan-500/20 text-cyan-400 px-2 py-0.5 rounded-full">
+                    Soon
+                  </span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="#"
+                  className="hover:text-purple-400 transition-colors text-sm"
+                >
+                  FAQs
+                </a>
+              </li>
+            </ul>
+          </motion.div>
+
+          {/* Connect */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="text-lg font-semibold text-pink-400 mb-4">
+              Connect With Us
+            </h3>
+            <div className="flex gap-3 mb-4">
+              <motion.a
+                href="https://x.com/nexrate_app"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 bg-gray-800/50 border border-gray-700 rounded-xl flex items-center justify-center text-gray-400 hover:text-cyan-400 hover:border-cyan-500/50 transition-all"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                </svg>
+              </motion.a>
+              <motion.a
+                href="https://t.me/NexRates"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 bg-gray-800/50 border border-gray-700 rounded-xl flex items-center justify-center text-gray-400 hover:text-purple-400 hover:border-purple-500/50 transition-all"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z" />
+                </svg>
+              </motion.a>
+              <motion.a
+                href="#"
+                target="_blank"
+                rel="noopener noreferrer"
+                whileHover={{ scale: 1.1, y: -2 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-10 h-10 bg-gray-800/50 border border-gray-700 rounded-xl flex items-center justify-center text-gray-400 hover:text-pink-400 hover:border-pink-500/50 transition-all"
+              >
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515a.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0a12.64 12.64 0 0 0-.617-1.25a.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057a19.9 19.9 0 0 0 5.993 3.03a.078.078 0 0 0 .084-.028a14.09 14.09 0 0 0 1.226-1.994a.076.076 0 0 0-.041-.106a13.107 13.107 0 0 1-1.872-.892a.077.077 0 0 1-.008-.128a10.2 10.2 0 0 0 .372-.292a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127a12.299 12.299 0 0 1-1.873.892a.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028a19.839 19.839 0 0 0 6.002-3.03a.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.956-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419c0-1.333.955-2.419 2.157-2.419c1.21 0 2.176 1.096 2.157 2.42c0 1.333-.946 2.418-2.157 2.418z" />
+                </svg>
+              </motion.a>
+            </div>
+            <p className="text-xs text-gray-500">
+              Join our community for updates, support, and exclusive
+              announcements.
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Divider */}
+        <div className="border-t border-gray-800 my-8"></div>
+
+        {/* Bottom Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          viewport={{ once: true }}
+          className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-gray-500"
+        >
+          <p>© {new Date().getFullYear()} NexRate. All rights reserved.</p>
+          <div className="flex items-center gap-4">
+            <span className="text-xs bg-cyan-500/10 text-cyan-400 px-3 py-1 rounded-full">
+              🚀 Phase 1: Waitlist Open
+            </span>
+            <span className="text-xs">
+              Built with ❤️ for the future of trading
+            </span>
+          </div>
+        </motion.div>
       </div>
     </footer>
   );
