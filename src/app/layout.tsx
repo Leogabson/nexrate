@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -12,13 +13,14 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const inter = Inter({ subsets: ["latin"] });
+
 // ✅ Strongly typed metadata
 export const metadata = {
   metadataBase: new URL("https://nexrate.vercel.app"),
-  title: "NexRate — Faster, Smarter, Safer Crypto & Giftcard Exchange",
+  title: "NexRate - AI-Powered Crypto & Gift Card Exchange",
   description:
-    "Join NexRate — the modern platform to swap, buy, and sell crypto & gift cards. With AI-powered arbitrage, smart rate lock, and more. Get early access now!",
-
+    "The smarter way to trade crypto & gift cards. Powered by AI, secured by Blockchain, accelerated by BlockDAG.",
   keywords: [
     "crypto exchange",
     "gift card trading",
@@ -98,7 +100,7 @@ export const viewport = {
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className="overflow-x-hidden">
       <head>
         {/* Additional meta tags for better SEO */}
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -134,9 +136,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${inter.className} overflow-x-hidden w-full max-w-[100vw]`}
       >
-        {children}
+        <div className="w-full overflow-x-hidden">{children}</div>
       </body>
     </html>
   );
