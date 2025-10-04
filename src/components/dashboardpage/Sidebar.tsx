@@ -186,7 +186,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-lg blur-lg opacity-50"></div>
                 <div className="relative w-10 h-10 rounded-lg overflow-hidden">
                   <Image
-                    src="/logo.png"
+                    src="/logo.jpg"
                     alt="NexRate"
                     width={40}
                     height={40}
@@ -291,7 +291,7 @@ export default function Sidebar({ isOpen, setIsOpen }: SidebarProps) {
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-lg overflow-hidden">
                       <Image
-                        src="/logo.png"
+                        src="/logo.jpg"
                         alt="NexRate"
                         width={40}
                         height={40}
