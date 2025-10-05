@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
-import { Inter } from "next/font/google";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,14 +12,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const inter = Inter({ subsets: ["latin"] });
-
 // ✅ Strongly typed metadata
 export const metadata = {
   metadataBase: new URL("https://nexrate.vercel.app"),
-  title: "NexRate - AI-Powered Crypto & Gift Card Exchange",
+  title: "NexRate – Faster, Smarter, Safer Crypto & Giftcard Exchange",
   description:
-    "The smarter way to trade crypto & gift cards. Powered by AI, secured by Blockchain, accelerated by BlockDAG.",
+    "Join NexRate – the modern platform to swap, buy, and sell crypto & gift cards. With AI-powered arbitrage, smart rate lock, and more. Get early access now!",
+
   keywords: [
     "crypto exchange",
     "gift card trading",
@@ -56,7 +54,7 @@ export const metadata = {
   },
 
   openGraph: {
-    title: "NexRate — Swap Crypto & Gift Cards Seamlessly",
+    title: "NexRate – Swap Crypto & Gift Cards Seamlessly",
     description:
       "The smarter way to exchange crypto & gift cards with AI-powered arbitrage and smart rate lock. Join our waitlist today!",
     url: "https://nexrate.vercel.app",
@@ -76,7 +74,7 @@ export const metadata = {
 
   twitter: {
     card: "summary_large_image",
-    title: "NexRate — Swap Crypto & Gift Cards Seamlessly",
+    title: "NexRate – Swap Crypto & Gift Cards Seamlessly",
     description:
       "The smarter way to exchange crypto & gift cards with AI-powered features. Join our waitlist today!",
     images: ["/twitter-image.png"],
@@ -103,7 +101,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en" className="overflow-x-hidden">
       <head>
         {/* Additional meta tags for better SEO */}
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+        />
         <meta name="format-detection" content="telephone=no" />
         <link rel="canonical" href="https://nexrate.vercel.app" />
 
@@ -136,9 +137,9 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         />
       </head>
       <body
-        className={`${inter.className} overflow-x-hidden w-full max-w-[100vw]`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased overflow-x-hidden w-full max-w-[100vw]`}
       >
-        <div className="w-full overflow-x-hidden">{children}</div>
+        {children}
       </body>
     </html>
   );
