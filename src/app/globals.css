@@ -20,6 +20,7 @@
     --foreground: #ededed;
   }
 }
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -28,4 +29,56 @@ body {
 
 html {
   scroll-behavior: smooth;
+}
+
+/* ========================================
+   HORIZONTAL SCROLL PREVENTION
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  overflow-x: hidden;
+  width: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  width: 100%;
+  max-width: 100vw;
+  position: relative;
+}
+
+/* Ensure all major containers respect viewport width */
+section,
+main,
+header,
+footer,
+div {
+  max-width: 100vw;
+}
+
+/* Prevent Framer Motion animations from causing overflow */
+[data-projection-id] {
+  overflow-x: clip !important;
+}
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0b0f19;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
 }
