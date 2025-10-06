@@ -1,261 +1,214 @@
 "use client";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import Link from "next/link";
 
-import React from "react";
-import { motion, Variants, TargetAndTransition } from "framer-motion";
+interface HeroProps {
+  waitlistCount?: number;
+}
 
-export default function Hero() {
-  // Animation variants
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.2, delayChildren: 0.1 },
-    },
-  };
-
-  const slideInFromLeft: Variants = {
-    hidden: { opacity: 0, x: -100, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: { duration: 0.8, ease: "easeOut" },
-    },
-  };
-
-  const slideInFromRight: Variants = {
-    hidden: { opacity: 0, x: 100, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      x: 0,
-      scale: 1,
-      transition: { duration: 0.8, ease: "easeOut", delay: 0.3 },
-    },
-  };
-
-  const fadeInUp: Variants = {
-    hidden: { opacity: 0, y: 30 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: "easeOut" },
-    },
-  };
-
-  const buttonVariants: Variants = {
-    hidden: { opacity: 0, y: 20, scale: 0.8 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      scale: 1,
-      transition: { duration: 0.5, ease: "easeOut" },
-    },
-  };
-
-  // Properly typed animation objects
-  const floatingAnimation: TargetAndTransition = {
-    y: [-10, 10, -10],
-    transition: { duration: 6, repeat: Infinity, ease: "easeInOut" },
-  };
-
-  const glowAnimation: TargetAndTransition = {
-    boxShadow: [
-      "0 0 20px rgba(6, 182, 212, 0.3)",
-      "0 0 40px rgba(6, 182, 212, 0.6)",
-      "0 0 20px rgba(6, 182, 212, 0.3)",
-    ],
-    transition: { duration: 3, repeat: Infinity, ease: "easeInOut" },
-  };
-
-  const handleGetStartedClick = (): void => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleLearnMoreClick = (): void => {
-    document.getElementById("about")?.scrollIntoView({ behavior: "smooth" });
+export default function Hero({ waitlistCount = 0 }: HeroProps) {
+  const scrollToWaitlist = () => {
+    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <motion.section
-      className="flex flex-col md:flex-row items-center justify-between px-6 md:px-16 py-16"
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Left Content */}
-      <motion.div
-        className="max-w-xl text-center md:text-left"
-        variants={slideInFromLeft}
-      >
-        {/* Updated Badge */}
+    <section className="relative min-h-screen bg-[#0F172A] text-white overflow-hidden flex items-center">
+      {/* Animated Gradient Orbs Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-cyan-500/10 to-purple-500/10 border border-cyan-500/30 rounded-full px-4 py-2 mb-6"
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 0.5 }}
-        >
-          <span className="text-cyan-400 text-sm font-semibold">
-            🚀 Powered by AI + Blockchain + BlockDAG
-          </span>
-        </motion.div>
-
-        <motion.h2
-          className="text-4xl md:text-5xl font-bold leading-tight"
-          variants={fadeInUp}
-        >
-          Smarter Trading with{" "}
-          <motion.span
-            className="text-cyan-400"
-            whileHover={{
-              textShadow: "0 0 20px rgba(6, 182, 212, 0.8)",
-              transition: { duration: 0.2 },
-            }}
-          >
-            AI & Blockchain
-          </motion.span>
-        </motion.h2>
-
-        <motion.p className="mt-4 text-gray-300 text-lg" variants={fadeInUp}>
-          Join the first AI-powered crypto & gift card platform introducing the{" "}
-          <span className="text-purple-400 font-semibold">
-            NXRATE Utility Token
-          </span>
-          . Experience faster, safer, and smarter digital transactions.
-        </motion.p>
-
-        {/* Key Features Highlights */}
-        <motion.div
-          className="mt-6 flex flex-wrap gap-3 justify-center md:justify-start"
-          variants={fadeInUp}
-        >
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span className="text-cyan-400">⚡</span>
-            <span>BlockDAG Speed</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span className="text-purple-400">🔒</span>
-            <span>On-Chain Security</span>
-          </div>
-          <div className="flex items-center gap-2 text-sm text-gray-400">
-            <span className="text-cyan-400">💎</span>
-            <span>Earn NXRATE Rewards</span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="mt-8 flex gap-4 justify-center md:justify-start"
-          variants={fadeInUp}
-        >
-          <motion.button
-            onClick={handleGetStartedClick}
-            className="bg-gradient-to-r from-cyan-400 to-purple-500 text-white px-6 py-3 rounded-lg hover:opacity-90 relative overflow-hidden font-semibold"
-            variants={buttonVariants}
-            whileHover={{
-              scale: 1.05,
-              boxShadow: "0 10px 30px rgba(6, 182, 212, 0.3)",
-              transition: { duration: 0.2 },
-            }}
-            whileTap={{ scale: 0.95 }}
-            animate={glowAnimation}
-          >
-            <motion.span
-              initial={{ x: 0 }}
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}
-            >
-              Be First to Earn NXRATE Token
-            </motion.span>
-          </motion.button>
-
-          <motion.button
-            onClick={handleLearnMoreClick}
-            className="border border-cyan-400 text-cyan-400 px-6 py-3 rounded-lg hover:bg-cyan-400 hover:text-black transition-all duration-300"
-            variants={buttonVariants}
-            whileHover={{
-              scale: 1.05,
-              borderColor: "#22d3ee",
-              boxShadow: "0 5px 20px rgba(6, 182, 212, 0.2)",
-              transition: { duration: 0.2 },
-            }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <motion.span
-              initial={{ x: 0 }}
-              whileHover={{ x: 3 }}
-              transition={{ duration: 0.2 }}
-            >
-              Learn More
-            </motion.span>
-          </motion.button>
-        </motion.div>
-
-        {/* Trust Indicators */}
-        <motion.div
-          className="mt-8 text-sm text-gray-400"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1, duration: 0.5 }}
-        >
-          <p>Join the waitlist • Early access rewards • No spam</p>
-        </motion.div>
-      </motion.div>
-
-      {/* Right Content - Illustration */}
-      <motion.div
-        className="mt-8 md:mt-0 relative"
-        variants={slideInFromRight}
-        animate={floatingAnimation}
-      >
-        <motion.img
-          src="/hero-illustration.png"
-          alt="Trading Illustration"
-          className="w-96"
-          whileHover={{ scale: 1.05, rotate: 2, transition: { duration: 0.3 } }}
-          drag
-          dragConstraints={{ left: -20, right: 20, top: -20, bottom: 20 }}
-          dragElastic={0.1}
-          whileDrag={{ scale: 1.1, cursor: "grabbing" }}
-        />
-
-        {/* Animated background glow */}
-        <motion.div
-          className="absolute -z-10 w-96 h-96 bg-gradient-to-r from-cyan-400/10 to-purple-500/10 rounded-full blur-3xl top-0 left-0"
+          className="absolute top-20 left-10 w-[500px] h-[500px] rounded-full opacity-20"
+          style={{
+            background: "radial-gradient(circle, #00D4FF 0%, transparent 70%)",
+          }}
           animate={{
-            scale: [1, 1.1, 1],
-            opacity: [0.3, 0.5, 0.3],
+            scale: [1, 1.2, 1],
+            x: [0, 50, 0],
+            y: [0, 30, 0],
           }}
           transition={{
-            duration: 4,
+            duration: 20,
             repeat: Infinity,
             ease: "easeInOut",
           }}
         />
-      </motion.div>
-
-      {/* Background Particles */}
-      <div className="absolute inset-0 -z-20 overflow-hidden">
-        {[...Array(20)].map((_, i) => {
-          const leftPosition = (i * 17 + 23) % 100;
-          const topPosition = (i * 31 + 47) % 100;
-          const duration = 3 + (i % 3);
-          const delay = i * 0.2;
-
-          return (
-            <motion.div
-              key={i}
-              className="absolute w-1 h-1 bg-cyan-400/30 rounded-full"
-              style={{ left: `${leftPosition}%`, top: `${topPosition}%` }}
-              animate={{ y: [-20, 20], opacity: [0, 1, 0] }}
-              transition={{
-                duration,
-                repeat: Infinity,
-                delay,
-                ease: "easeInOut",
-              }}
-            />
-          );
-        })}
+        <motion.div
+          className="absolute top-40 right-10 w-[600px] h-[600px] rounded-full opacity-20"
+          style={{
+            background: "radial-gradient(circle, #8B5CF6 0%, transparent 70%)",
+          }}
+          animate={{
+            scale: [1.2, 1, 1.2],
+            x: [0, -30, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
+        <motion.div
+          className="absolute bottom-20 left-1/3 w-[400px] h-[400px] rounded-full opacity-20"
+          style={{
+            background: "radial-gradient(circle, #0EA5E9 0%, transparent 70%)",
+          }}
+          animate={{
+            scale: [1, 1.3, 1],
+            x: [0, -40, 0],
+          }}
+          transition={{
+            duration: 18,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        />
       </div>
-    </motion.section>
+
+      {/* Content Container */}
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            className="text-center lg:text-left"
+          >
+            {/* Headline */}
+            <motion.h1
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+            >
+              Turn Your Crypto Into{" "}
+              <span className="bg-gradient-to-r from-[#00D4FF] via-[#0EA5E9] to-[#8B5CF6] bg-clip-text text-transparent">
+                Netflix, Spotify & Bills
+              </span>{" "}
+              - At Guaranteed Best Rates
+            </motion.h1>
+
+            {/* Subheadline */}
+            <motion.p
+              className="text-lg sm:text-xl text-[#CBD5E1] mb-8 max-w-2xl mx-auto lg:mx-0"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4 }}
+            >
+              Join Africa&apos;s first AI-powered exchange combining crypto
+              trading, instant gift cards, and smart bill payments. Earn NXRATE
+              tokens on every transaction.
+            </motion.p>
+
+            {/* Primary CTA */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6 }}
+              className="mb-8"
+            >
+              <button
+                onClick={scrollToWaitlist}
+                className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white bg-[#06B6D4] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(6,182,212,0.4)]"
+              >
+                <span className="relative z-10">
+                  Join Early Access Waitlist
+                </span>
+                <motion.div className="absolute inset-0 bg-gradient-to-r from-[#00D4FF] via-[#0EA5E9] to-[#8B5CF6] opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </button>
+            </motion.div>
+
+            {/* Supporting Elements */}
+            <motion.div
+              className="space-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.8, delay: 0.8 }}
+            >
+              {/* Trust Badge */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-sm text-[#CBD5E1]">
+                <span className="text-[#10B981]">🔒</span>
+                <span>Secured by Blockchain Smart Contracts</span>
+              </div>
+
+              {/* Live Counter */}
+              <div className="flex items-center justify-center lg:justify-start gap-2 text-sm">
+                <div className="flex items-center gap-2">
+                  <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse" />
+                  <span className="text-[#CBD5E1]">
+                    Join{" "}
+                    <span className="font-bold text-white">
+                      {waitlistCount.toLocaleString()}
+                    </span>{" "}
+                    traders on the waitlist
+                  </span>
+                </div>
+              </div>
+
+              {/* Scarcity */}
+              <div className="inline-flex items-center gap-2 bg-[#F59E0B]/10 border border-[#F59E0B]/30 px-4 py-2 rounded-full">
+                <span className="text-[#F59E0B] text-sm font-semibold">
+                  ⚡ Limited to first 5,000 early access members
+                </span>
+              </div>
+            </motion.div>
+          </motion.div>
+
+          {/* Right Visual - Placeholder */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="relative hidden lg:block"
+          >
+            <div className="relative w-full h-[500px] flex items-center justify-center">
+              {/* Placeholder for illustration */}
+              <div className="relative w-full h-full bg-gradient-to-br from-[#00D4FF]/10 via-[#0EA5E9]/10 to-[#8B5CF6]/10 rounded-3xl border border-white/10 flex items-center justify-center backdrop-blur-sm">
+                <div className="text-center">
+                  <div className="text-6xl mb-4">🎨</div>
+                  <p className="text-[#64748B] text-sm">
+                    Crypto → Gift Card Flow Illustration
+                    <br />
+                    (Placeholder - Replace with actual asset)
+                  </p>
+                </div>
+              </div>
+
+              {/* Decorative floating elements */}
+              <motion.div
+                className="absolute top-10 left-10 w-20 h-20 rounded-2xl bg-gradient-to-br from-[#00D4FF] to-[#0EA5E9] flex items-center justify-center shadow-lg"
+                animate={{
+                  y: [-10, 10, -10],
+                  rotate: [0, 5, 0],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <span className="text-3xl">₿</span>
+              </motion.div>
+
+              <motion.div
+                className="absolute bottom-10 right-10 w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#0EA5E9] flex items-center justify-center shadow-lg"
+                animate={{
+                  y: [10, -10, 10],
+                  rotate: [0, -5, 0],
+                }}
+                transition={{
+                  duration: 5,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              >
+                <span className="text-3xl">🎁</span>
+              </motion.div>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
   );
 }
