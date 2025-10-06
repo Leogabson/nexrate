@@ -1,6 +1,7 @@
 // src/app/page.tsx - Updated Landing Page
 
 import Navbar from "@/components/landingpage/Navbar";
+import TrustBar from "@/components/landingpage/TrustBar";
 import Hero from "@/components/landingpage/Hero";
 import About from "@/components/landingpage/About";
 import Features from "@/components/landingpage/Features";
@@ -16,7 +17,8 @@ export default function Home() {
       <div className="w-full max-w-[100vw] overflow-x-hidden">
         <Navbar />
         <main className="w-full overflow-x-hidden">
-          <Hero />
+          <Hero waitlistCount={1247} />
+          <TrustBar />
           <About />
           <Features />
           <HowItWorks />
