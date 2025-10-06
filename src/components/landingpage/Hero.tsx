@@ -163,16 +163,12 @@ export default function Hero({ waitlistCount = 0 }: HeroProps) {
             className="relative hidden lg:block"
           >
             <div className="relative w-full h-[500px] flex items-center justify-center">
-              {/* Placeholder for illustration */}
-              <div className="relative w-full h-full bg-gradient-to-br from-[#00D4FF]/10 via-[#0EA5E9]/10 to-[#8B5CF6]/10 rounded-3xl border border-white/10 flex items-center justify-center backdrop-blur-sm">
-                <div className="text-center">
-                  <div className="text-6xl mb-4">🎨</div>
-                  <p className="text-[#64748B] text-sm">
-                    Crypto → Gift Card Flow Illustration
-                    <br />
-                    (Placeholder - Replace with actual asset)
-                  </p>
-                </div>
+              <div className="relative w-full h-full rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden">
+                <img
+                  src="/hero-illustration.png"
+                  alt="Crypto to Gift Card Flow Illustration"
+                  className="w-full h-full object-contain"
+                />
               </div>
 
               {/* Decorative floating elements */}
