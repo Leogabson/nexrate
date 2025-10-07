@@ -6,8 +6,10 @@ import TrustBar from "@/components/landingpage/TrustBar";
 import TheProblem from "@/components/landingpage/TheProblem";
 import Features from "@/components/landingpage/Features";
 import HowItWorks from "@/components/landingpage/HowItWorks";
+import EarlyAdopter from "@/components/landingpage/EarlyAdopter";
 import WhyTrustUs from "@/components/landingpage/WhyTrustUs";
 import Roadmap from "@/components/landingpage/Roadmap";
+import FAQ from "@/components/landingpage/FAQ";
 import TokenTeaser from "@/components/landingpage/TokenTeaser";
 import Waitlist from "@/components/landingpage/Waitlist";
 import Footer from "@/components/landingpage/Footer";
@@ -25,7 +27,9 @@ export default function Home() {
           <HowItWorks />
           <TokenTeaser />
           <WhyTrustUs />
+          <EarlyAdopter />
           <Roadmap />
+          <FAQ />
           <Waitlist />
         </main>
         <Footer />
