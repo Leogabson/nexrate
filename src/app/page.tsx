@@ -6,6 +6,7 @@ import TrustBar from "@/components/landingpage/TrustBar";
 import TheProblem from "@/components/landingpage/TheProblem";
 import Features from "@/components/landingpage/Features";
 import HowItWorks from "@/components/landingpage/HowItWorks";
+import WhyTrustUs from "@/components/landingpage/WhyTrustUs";
 import Roadmap from "@/components/landingpage/Roadmap";
 import TokenTeaser from "@/components/landingpage/TokenTeaser";
 import Waitlist from "@/components/landingpage/Waitlist";
@@ -23,6 +24,7 @@ export default function Home() {
           <Features />
           <HowItWorks />
           <TokenTeaser />
+          <WhyTrustUs />
           <Roadmap />
           <Waitlist />
         </main>
