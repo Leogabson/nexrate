@@ -91,7 +91,7 @@ export default function TokenTeaser(): JSX.Element {
   };
 
   return (
-    <section className="py-20 px-6 md:px-16 bg-[#0B0F19] text-white relative overflow-hidden">
+    <section className="py-20 px-6 md:px-16 bg-[#1E293B] text-white relative overflow-hidden">
       {/* Animated Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <motion.div

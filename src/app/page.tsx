@@ -22,8 +22,8 @@ export default function Home() {
           <TheProblem />
           <Features />
           <HowItWorks />
-          <Roadmap />
           <TokenTeaser />
+          <Roadmap />
           <Waitlist />
         </main>
         <Footer />
