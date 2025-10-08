@@ -2,13 +2,14 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { JSX } from "react";
 
 interface HeroProps {
   waitlistCount?: number;
 }
 
-export default function Hero({ waitlistCount = 0 }: HeroProps) {
-  const scrollToWaitlist = () => {
+export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
+  const scrollToWaitlist = (): void => {
     document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
   };
 
@@ -155,27 +156,25 @@ export default function Hero({ waitlistCount = 0 }: HeroProps) {
             </motion.div>
           </motion.div>
 
-          {/* Right Visual - Placeholder */}
+          {/* Right Content - Hero Image (Now visible on mobile) */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative hidden lg:block"
+            className="relative mt-12 lg:mt-0"
           >
-            <div className="relative w-full h-[500px] flex items-center justify-center">
-              {/* Placeholder for illustration */}
-
+            <div className="relative w-full h-[300px] md:h-[400px] flex items-center justify-center">
               <div className="relative w-full h-full rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden">
                 <img
                   src="/hero-illustration.png"
                   alt="Crypto to Gift Card Flow Illustration"
-                  className="w-full h-full object-contain"
+                  className="w-full h-full object-cover rounded-2xl"
                 />
               </div>
 
               {/* Decorative floating elements */}
               <motion.div
-                className="absolute top-10 left-10 w-20 h-20 rounded-2xl bg-gradient-to-br from-[#00D4FF] to-[#0EA5E9] flex items-center justify-center shadow-lg"
+                className="absolute top-5 left-5 md:top-10 md:left-10 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#00D4FF] to-[#0EA5E9] flex items-center justify-center shadow-lg"
                 animate={{
                   y: [-10, 10, -10],
                   rotate: [0, 5, 0],
@@ -186,11 +185,11 @@ export default function Hero({ waitlistCount = 0 }: HeroProps) {
                   ease: "easeInOut",
                 }}
               >
-                <span className="text-3xl">₿</span>
+                <span className="text-2xl md:text-3xl">₿</span>
               </motion.div>
 
               <motion.div
-                className="absolute bottom-10 right-10 w-20 h-20 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#0EA5E9] flex items-center justify-center shadow-lg"
+                className="absolute bottom-5 right-5 md:bottom-10 md:right-10 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#0EA5E9] flex items-center justify-center shadow-lg"
                 animate={{
                   y: [10, -10, 10],
                   rotate: [0, -5, 0],
@@ -201,7 +200,7 @@ export default function Hero({ waitlistCount = 0 }: HeroProps) {
                   ease: "easeInOut",
                 }}
               >
-                <span className="text-3xl">🎁</span>
+                <span className="text-2xl md:text-3xl">🎁</span>
               </motion.div>
             </div>
           </motion.div>

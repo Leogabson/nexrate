@@ -1,103 +1,72 @@
 "use client";
-import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 
 export default function Navbar() {
-  const [open, setOpen] = useState(false);
+  const scrollToWaitlist = () => {
+    document.getElementById("waitlist")?.scrollIntoView({ behavior: "smooth" });
+  };
 
   return (
-    <header className="flex justify-between items-center px-6 py-4 bg-[#0F172A] border-b border-[#1F2937] sticky top-0 z-50 backdrop-blur-xl">
-      {/* Logo */}
-      <div className="flex items-center space-x-2">
-        <Image
-          src="/logo.jpg"
-          alt="NexRate Logo"
-          width={40}
-          height={40}
-          className="rounded-full"
-        />
-        <span className="text-2xl font-bold text-cyan-400">NexRate</span>
-      </div>
+    <motion.header
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="sticky top-0 z-50 bg-[#0F172A]/95 backdrop-blur-xl border-b border-gray-800"
+    >
+      <div className="max-w-7xl mx-auto px-6 py-4">
+        <div className="flex justify-between items-center">
+          {/* Logo - Left */}
+          <a href="#home" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 rounded-lg overflow-hidden transition-transform group-hover:scale-110">
+              <Image
+                src="/logo.jpg"
+                alt="NexRate"
+                width={40}
+                height={40}
+                className="object-cover"
+              />
+            </div>
+            <span className="text-xl font-bold text-white">NexRate</span>
+          </a>
 
-      {/* Desktop Nav */}
-      <nav className="hidden md:flex space-x-6 items-center">
-        <a href="#home" className="hover:text-cyan-400 transition-colors">
-          Home
-        </a>
-        <a href="#features" className="hover:text-cyan-400 transition-colors">
-          Features
-        </a>
-        <a href="#how" className="hover:text-cyan-400 transition-colors">
-          How It Works
-        </a>
-        <a href="#roadmap" className="hover:text-cyan-400 transition-colors">
-          Roadmap
-        </a>
-        <a
-          href="#contact"
-          className="ml-4 bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-6 py-2 rounded-lg hover:opacity-90 transition-opacity font-medium"
-        >
-          Join Waitlist
-        </a>
-      </nav>
-
-      {/* Mobile Menu Button */}
-      <button
-        className="md:hidden text-cyan-400 text-2xl"
-        onClick={() => setOpen(!open)}
-      >
-        ☰
-      </button>
-
-      {/* Mobile Menu */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="absolute top-16 left-0 w-full bg-[#0B0F19] flex flex-col items-center space-y-6 py-6 border-t border-[#1F2937] md:hidden shadow-xl"
-          >
-            <a
-              href="#home"
-              onClick={() => setOpen(false)}
-              className="hover:text-cyan-400 transition-colors"
-            >
-              Home
-            </a>
-            <a
-              href="#features"
-              onClick={() => setOpen(false)}
-              className="hover:text-cyan-400 transition-colors"
-            >
-              Features
-            </a>
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden md:flex items-center gap-8">
             <a
               href="#how"
-              onClick={() => setOpen(false)}
-              className="hover:text-cyan-400 transition-colors"
+              className="text-gray-300 hover:text-[#06B6D4] transition-colors text-sm font-medium"
             >
               How It Works
             </a>
             <a
+              href="#features"
+              className="text-gray-300 hover:text-[#06B6D4] transition-colors text-sm font-medium"
+            >
+              Features
+            </a>
+            <a
               href="#roadmap"
-              onClick={() => setOpen(false)}
-              className="hover:text-cyan-400 transition-colors"
+              className="text-gray-300 hover:text-[#06B6D4] transition-colors text-sm font-medium"
             >
               Roadmap
             </a>
             <a
-              href="#contact"
-              onClick={() => setOpen(false)}
-              className="bg-gradient-to-r from-cyan-500 to-purple-500 text-white px-8 py-3 rounded-lg hover:opacity-90 transition-opacity font-medium"
+              href="#faq"
+              className="text-gray-300 hover:text-[#06B6D4] transition-colors text-sm font-medium"
             >
-              Join Waitlist
+              FAQ
             </a>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </header>
+          </nav>
+
+          {/* CTA Button - Right */}
+          <button
+            onClick={scrollToWaitlist}
+            className="px-6 py-2.5 bg-[#06B6D4] text-white rounded-lg font-semibold text-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#06B6D4]/30"
+          >
+            Join Waitlist
+          </button>
+        </div>
+      </div>
+    </motion.header>
   );
 }
