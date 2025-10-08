@@ -15,8 +15,18 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
 
   return (
     <section className="relative min-h-screen bg-[#0F172A] text-white overflow-hidden flex items-center">
-      {/* Animated Gradient Orbs Background */}
+      {/* Hero Illustration as Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0F172A]/60 to-[#0F172A] z-10" />
+        <img
+          src="/image-test.png"
+          alt="Background Illustration"
+          className="absolute inset-0 w-full h-full object-cover opacity-30 scale-110"
+        />
+      </div>
+
+      {/* Animated Gradient Orbs Background */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-20">
         <motion.div
           className="absolute top-20 left-10 w-[500px] h-[500px] rounded-full opacity-20"
           style={{
@@ -67,18 +77,18 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
       </div>
 
       {/* Content Container */}
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 py-20">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Left Content */}
+      <div className="relative z-30 w-full max-w-7xl mx-auto px-6 py-20">
+        <div className="flex flex-col items-center text-center">
+          {/* Main Content */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="text-center lg:text-left"
+            className="max-w-4xl"
           >
             {/* Headline */}
             <motion.h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-bold leading-tight mb-6"
+              className="text-4xl sm:text-5xl lg:text-7xl font-bold leading-tight mb-6"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
@@ -92,7 +102,7 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
 
             {/* Subheadline */}
             <motion.p
-              className="text-lg sm:text-xl text-[#CBD5E1] mb-8 max-w-2xl mx-auto lg:mx-0"
+              className="text-lg sm:text-xl lg:text-2xl text-[#CBD5E1] mb-10 max-w-3xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
@@ -107,11 +117,11 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="mb-8"
+              className="mb-10"
             >
               <button
                 onClick={scrollToWaitlist}
-                className="group relative inline-flex items-center justify-center px-10 py-5 text-lg font-bold text-white bg-[#06B6D4] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(6,182,212,0.4)]"
+                className="group relative inline-flex items-center justify-center px-12 py-6 text-xl font-bold text-white bg-[#06B6D4] rounded-xl overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_40px_rgba(6,182,212,0.5)]"
               >
                 <span className="relative z-10">
                   Join Early Access Waitlist
@@ -128,13 +138,13 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
               transition={{ duration: 0.8, delay: 0.8 }}
             >
               {/* Trust Badge */}
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-sm text-[#CBD5E1]">
+              <div className="flex items-center justify-center gap-2 text-sm text-[#CBD5E1]">
                 <span className="text-[#10B981]">🔒</span>
                 <span>Secured by Blockchain Smart Contracts</span>
               </div>
 
               {/* Live Counter */}
-              <div className="flex items-center justify-center lg:justify-start gap-2 text-sm">
+              <div className="flex items-center justify-center gap-2 text-sm">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-[#10B981] rounded-full animate-pulse" />
                   <span className="text-[#CBD5E1]">
@@ -154,55 +164,6 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
                 </span>
               </div>
             </motion.div>
-          </motion.div>
-
-          {/* Right Content - Hero Image (Now visible on mobile) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="relative mt-12 lg:mt-0"
-          >
-            <div className="relative w-full h-[300px] md:h-[400px] flex items-center justify-center">
-              <div className="relative w-full h-full rounded-3xl border border-white/10 flex items-center justify-center overflow-hidden">
-                <img
-                  src="/hero-illustration.png"
-                  alt="Crypto to Gift Card Flow Illustration"
-                  className="w-full h-full object-cover rounded-2xl"
-                />
-              </div>
-
-              {/* Decorative floating elements */}
-              <motion.div
-                className="absolute top-5 left-5 md:top-10 md:left-10 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#00D4FF] to-[#0EA5E9] flex items-center justify-center shadow-lg"
-                animate={{
-                  y: [-10, 10, -10],
-                  rotate: [0, 5, 0],
-                }}
-                transition={{
-                  duration: 4,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <span className="text-2xl md:text-3xl">₿</span>
-              </motion.div>
-
-              <motion.div
-                className="absolute bottom-5 right-5 md:bottom-10 md:right-10 w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-gradient-to-br from-[#8B5CF6] to-[#0EA5E9] flex items-center justify-center shadow-lg"
-                animate={{
-                  y: [10, -10, 10],
-                  rotate: [0, -5, 0],
-                }}
-                transition={{
-                  duration: 5,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                }}
-              >
-                <span className="text-2xl md:text-3xl">🎁</span>
-              </motion.div>
-            </div>
           </motion.div>
         </div>
       </div>
