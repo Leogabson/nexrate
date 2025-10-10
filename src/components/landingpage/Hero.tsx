@@ -108,7 +108,7 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               Join Africa&apos;s first AI-powered exchange combining crypto
-              trading, instant gift cards, and smart bill payments. Earn NXRATE
+              trading, instant gift cards, and smart bill payments. Earn NXRT
               tokens on every transaction.
             </motion.p>
 

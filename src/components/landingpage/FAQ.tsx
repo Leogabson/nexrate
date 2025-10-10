@@ -33,7 +33,7 @@ export default function FAQ() {
         "Our AI continuously scans 50+ exchanges in real-time to find the best rates. You automatically get the most profitable rate without manual comparison.",
     },
     {
-      question: "What can I do with NXRATE tokens?",
+      question: "What can I do with NXRT tokens?",
       answer:
         "NXRATE tokens have real utility: Earn them on every trade, stake for up to 50% fee discounts, use to pay for gift cards and bills, and vote on platform decisions.",
     },
