@@ -63,7 +63,7 @@ const navItems: NavItem[] = [
   },
   {
     id: 6,
-    label: "NXR Rewards",
+    label: "NXRT Rewards",
     href: "/dashboard/rewards",
     icon: Award,
     badge: "New",

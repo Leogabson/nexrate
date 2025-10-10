@@ -1,15 +1,19 @@
-// src/app/api/user/profile/route.ts
+/// src/app/api/user/profile/route.ts
 import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth";
+import { getServerSession } from "next-auth/next";
 import clientPromise from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcryptjs";
 
+async function getAuthSession() {
+  return await getServerSession();
+}
+
 export async function GET() {
   try {
-    const session = await getServerSession();
+    const session = await getAuthSession();
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -18,7 +22,7 @@ export async function GET() {
     const users = db.collection("users");
 
     const user = await users.findOne(
-      { _id: new ObjectId(session.user.id) },
+      { email: session.user.email },
       { projection: { password: 0, verificationToken: 0, resetToken: 0 } }
     );
 
@@ -49,9 +53,9 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
-    const session = await getServerSession();
+    const session = await getAuthSession();
 
-    if (!session?.user?.id) {
+    if (!session?.user?.email) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -69,7 +73,7 @@ export async function PATCH(request: Request) {
     const db = client.db("nexrate");
     const users = db.collection("users");
 
-    const user = await users.findOne({ _id: new ObjectId(session.user.id) });
+    const user = await users.findOne({ email: session.user.email });
 
     if (!user) {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -118,10 +122,7 @@ export async function PATCH(request: Request) {
       updateData.password = await bcrypt.hash(newPassword, 10);
     }
 
-    await users.updateOne(
-      { _id: new ObjectId(session.user.id) },
-      { $set: updateData }
-    );
+    await users.updateOne({ email: session.user.email }, { $set: updateData });
 
     return NextResponse.json({
       message: "Profile updated successfully",

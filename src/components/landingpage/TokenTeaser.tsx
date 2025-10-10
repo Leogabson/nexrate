@@ -402,8 +402,9 @@ export default function TokenTeaser(): JSX.Element {
 
           <motion.button
             onClick={() => {
+              // ID in Waitlist.tsx is "waitlist" (lowercase) — scroll to that
               document
-                .getElementById("contact")
+                .getElementById("waitlist")
                 ?.scrollIntoView({ behavior: "smooth" });
             }}
             className="bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 text-white px-10 py-4 rounded-lg font-bold text-xl shadow-2xl hover:shadow-3xl transition-all duration-300 relative overflow-hidden group"

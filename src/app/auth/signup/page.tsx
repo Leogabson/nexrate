@@ -162,7 +162,12 @@ export default function SignupPage() {
         </div>
 
         <button
-          onClick={() => signIn("google")}
+          onClick={() =>
+            // pass a callbackUrl so NextAuth redirects to the dashboard after sign in
+            signIn("google", {
+              callbackUrl: `${window.location.origin}/dashboard`,
+            })
+          }
           className="w-full py-3 bg-cyan-400 text-black rounded-lg font-medium flex items-center justify-center gap-2 hover:bg-cyan-200 transition"
         >
           <img src="/google-icon.png" alt="Google" className="w-10 h-10" />

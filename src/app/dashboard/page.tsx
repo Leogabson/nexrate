@@ -73,7 +73,7 @@ export default function DashboardPage() {
       color: "cyan",
     },
     {
-      label: "NXR Tokens",
+      label: "NXRATE Tokens",
       value: "0",
       change: "Coming Soon",
       trend: "neutral",
@@ -91,7 +91,7 @@ export default function DashboardPage() {
     {
       label: "Referrals",
       value: "0",
-      change: "Earn NXR",
+      change: "Earn NXRT",
       trend: "neutral",
       icon: Users,
       color: "blue",
@@ -397,7 +397,7 @@ export default function DashboardPage() {
             <div className="bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                  💎 NXR Tokens
+                  💎 NXRT Tokens
                 </h3>
                 <span className="bg-cyan-500/20 text-cyan-400 text-xs px-2 py-1 rounded-full">
                   Soon
@@ -405,7 +405,7 @@ export default function DashboardPage() {
               </div>
 
               <div className="mb-4">
-                <p className="text-3xl font-bold text-white mb-1">0 NXR</p>
+                <p className="text-3xl font-bold text-white mb-1">0 NXRT</p>
                 <p className="text-sm text-gray-400">
                   Token launch coming soon
                 </p>
