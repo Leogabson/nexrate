@@ -263,6 +263,3 @@ const handler = NextAuth({
 });
 
 export { handler as GET, handler as POST };
-
-// Export authOptions for use in other API routes
-export const authOptions = handler;
