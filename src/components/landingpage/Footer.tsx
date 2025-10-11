@@ -88,7 +88,7 @@ export default function Footer() {
                   href="#nxr-token"
                   className="hover:text-cyan-400 transition-colors text-sm"
                 >
-                  Token (NXRATE)
+                  Token (NXRT)
                 </a>
               </li>
               <li>

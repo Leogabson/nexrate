@@ -1,20 +1,21 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import DashboardLayout from "@/components/dashboardpage/DashboardLayout";
+import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
 import {
-  TrendingUp,
-  Wallet,
   ArrowUpRight,
   ArrowDownRight,
+  Award,
+  TrendingUp,
+  Users,
+  Wallet,
   Zap,
   Gift,
-  Users,
-  Award,
 } from "lucide-react";
+import DashboardLayout from "@/components/dashboardpage/DashboardLayout";
+import InsightsWidget from "@/components/dashboardpage/InsightsWidget";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -283,14 +284,15 @@ export default function DashboardPage() {
           </div>
         </motion.div>
 
-        {/* AI Arbitrage Finder */}
+        {/* AI Insights and Arbitrage Finder */}
         <div className="grid lg:grid-cols-3 gap-6">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.6 }}
-            className="lg:col-span-2"
+            className="lg:col-span-2 space-y-6"
           >
+            <InsightsWidget />
             <div className="bg-[#0B0F19] border border-gray-700 rounded-2xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <div>

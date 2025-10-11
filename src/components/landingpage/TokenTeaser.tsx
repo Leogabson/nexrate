@@ -16,7 +16,7 @@ export default function TokenTeaser(): JSX.Element {
     {
       icon: "🎁",
       title: "Earn Rewards",
-      description: "Get NXR tokens for every activity on the platform",
+      description: "Get NXRT tokens for every activity on the platform",
       features: [
         "Trade rewards on every swap",
         "Referral bonuses for invites",
@@ -40,7 +40,7 @@ export default function TokenTeaser(): JSX.Element {
     {
       icon: "🔄",
       title: "Redeem & Spend",
-      description: "Use NXR tokens across the entire ecosystem",
+      description: "Use NXRT tokens across the entire ecosystem",
       features: [
         "Pay for gift cards with NXR",
         "Cover trading fees instantly",
@@ -155,7 +155,7 @@ export default function TokenTeaser(): JSX.Element {
               Introducing NexRate Token
             </span>
             <br />
-            <span className="text-white text-4xl md:text-5xl">(NXRATE)</span>
+            <span className="text-white text-4xl md:text-5xl">(NXRT)</span>
           </motion.h2>
 
           <motion.p
@@ -199,7 +199,7 @@ export default function TokenTeaser(): JSX.Element {
                 <div className="text-center">
                   <div className="text-5xl md:text-6xl mb-2">💎</div>
                   <div className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                    NXRATE
+                    NXRT
                   </div>
                 </div>
               </div>
@@ -393,7 +393,7 @@ export default function TokenTeaser(): JSX.Element {
           viewport={{ once: true }}
         >
           <h3 className="text-3xl font-bold mb-4 text-white">
-            Be First to Earn NXRATE Tokens
+            Be First to Earn NXRT Tokens
           </h3>
           <p className="text-gray-300 text-lg mb-6 max-w-2xl mx-auto">
             Join our waitlist now and get early access to NXR token rewards when
@@ -402,7 +402,6 @@ export default function TokenTeaser(): JSX.Element {
 
           <motion.button
             onClick={() => {
-              // ID in Waitlist.tsx is "waitlist" (lowercase) — scroll to that
               document
                 .getElementById("waitlist")
                 ?.scrollIntoView({ behavior: "smooth" });

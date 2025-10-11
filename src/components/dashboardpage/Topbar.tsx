@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { Search, Bell, Settings, Zap, Wallet, Menu } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
@@ -13,6 +14,7 @@ interface TopbarProps {
 export default function Topbar({ onMenuClick }: TopbarProps) {
   const { data: session } = useSession();
   const [notifications] = useState(0);
+  const router = useRouter();
 
   return (
     <motion.div
@@ -52,6 +54,7 @@ export default function Topbar({ onMenuClick }: TopbarProps) {
         <motion.button
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
+          onClick={() => router.push("/dashboard/swap")}
           className="hidden lg:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-cyan-500 to-purple-500 text-white rounded-lg font-medium text-sm shadow-lg hover:shadow-xl transition-all"
         >
           <Zap size={16} />

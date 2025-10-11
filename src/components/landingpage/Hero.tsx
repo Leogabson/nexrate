@@ -17,7 +17,7 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
     <section className="relative min-h-screen bg-[#0F172A] text-white overflow-hidden flex items-center">
       {/* Hero Illustration as Background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute inset-0 from-transparent via-[#0F172A]/60 to-[#0F172A] z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0F172A]/60 to-[#0F172A] z-10" />
         <img
           src="/image-test.png"
           alt="Background Illustration"
@@ -108,7 +108,7 @@ export default function Hero({ waitlistCount = 0 }: HeroProps): JSX.Element {
               transition={{ duration: 0.8, delay: 0.4 }}
             >
               Join Africa&apos;s first AI-powered exchange combining crypto
-              trading, instant gift cards, and smart bill payments. Earn NXRATE
+              trading, instant gift cards, and smart bill payments. Earn NXRT
               tokens on every transaction.
             </motion.p>
 

@@ -48,13 +48,20 @@ const navItems: NavItem[] = [
   },
   {
     id: 4,
+    label: "Transactions",
+    href: "/dashboard/transactions",
+    icon: CreditCard,
+    color: "blue",
+  },
+  {
+    id: 5,
     label: "Gift Cards",
     href: "/dashboard/giftcards",
     icon: Gift,
     color: "pink",
   },
   {
-    id: 5,
+    id: 6,
     label: "AI Arbitrage",
     href: "/dashboard/arbitrage",
     icon: TrendingUp,
@@ -62,7 +69,7 @@ const navItems: NavItem[] = [
     color: "cyan",
   },
   {
-    id: 6,
+    id: 7,
     label: "NXRT Rewards",
     href: "/dashboard/rewards",
     icon: Award,
@@ -70,7 +77,7 @@ const navItems: NavItem[] = [
     color: "purple",
   },
   {
-    id: 7,
+    id: 8,
     label: "Referrals",
     href: "/dashboard/referrals",
     icon: Users,
@@ -80,14 +87,14 @@ const navItems: NavItem[] = [
 
 const bottomNavItems: NavItem[] = [
   {
-    id: 8,
+    id: 9,
     label: "Settings",
     href: "/dashboard/settings",
     icon: Settings,
     color: "gray",
   },
   {
-    id: 9,
+    id: 10,
     label: "Help & Support",
     href: "/dashboard/help",
     icon: HelpCircle,
