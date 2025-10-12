@@ -383,11 +383,17 @@ export default function SigninPage() {
 
             <p className="text-gray-400 text-xs text-center mt-8 leading-relaxed">
               By continuing, you agree to{" "}
-              <a href="/terms" className="text-cyan-400 hover:underline">
+              <a
+                href="/terms-of-service"
+                className="text-cyan-400 hover:underline"
+              >
                 NexRate's Terms of Service
               </a>{" "}
               and{" "}
-              <a href="/privacy" className="text-cyan-400 hover:underline">
+              <a
+                href="/privacy-policy"
+                className="text-cyan-400 hover:underline"
+              >
                 Privacy Policy
               </a>
               .

@@ -411,11 +411,17 @@ export default function SignupPage() {
                   className="text-xs text-gray-400 leading-relaxed"
                 >
                   By selecting "Create Account", you agree to our{" "}
-                  <a href="/terms" className="text-cyan-400 hover:underline">
+                  <a
+                    href="/terms-of-service-"
+                    className="text-cyan-400 hover:underline"
+                  >
                     Terms of Service
                   </a>{" "}
                   and{" "}
-                  <a href="/privacy" className="text-cyan-400 hover:underline">
+                  <a
+                    href="/privacy-policy"
+                    className="text-cyan-400 hover:underline"
+                  >
                     Privacy Policy
                   </a>
                 </label>
