@@ -17,6 +17,7 @@
     "@sendgrid/mail": "^8.1.5",
     "bcryptjs": "^3.0.2",
     "framer-motion": "^12.23.12",
+    "hcaptcha": "^0.2.0",
     "lightningcss": "^1.30.2",
     "lucide-react": "^0.543.0",
     "mongodb": "^5.9.2",
