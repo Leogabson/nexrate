@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+
+# Ignore specific file
+src/app/api/auth/verify-code/route.ts
+
+# Or ignore all files in a directory
+src/app/api/auth/verify-code/*
