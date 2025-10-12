@@ -41,7 +41,7 @@ yarn-error.log*
 next-env.d.ts
 
 # Ignore specific file
-src/app/api/auth/verify-code/page.tsx
+src/app/auth/verify-code/page.tsx
 
 # Or ignore all files in a directory
-src/app/api/auth/verify-code/*
+src/app/auth/verify-code/*
