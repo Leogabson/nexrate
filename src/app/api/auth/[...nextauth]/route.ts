@@ -1,14 +1,11 @@
-import NextAuth, {
-  type DefaultSession,
-  type Profile,
-  type Account,
-  type NextAuthOptions,
-} from "next-auth";
+// src/app/api/auth/[...nextauth]/route.ts
+import NextAuth, { type Profile } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
-import { ObjectId } from "mongodb"; // ✅ ADDED: Import ObjectId for proper queries
+import { ObjectId } from "mongodb";
+import { generateVerificationCode, getCodeExpiry } from "@/lib/db-schema";
 
 // Extend the Profile type to include Google-specific fields
 interface GoogleProfile extends Profile {
@@ -18,9 +15,6 @@ interface GoogleProfile extends Profile {
 }
 
 const handler = NextAuth({
-  // ✅ REMOVED: MongoDBAdapter - incompatible with JWT strategy
-  // We'll manage user/account creation manually in callbacks
-
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -56,9 +50,8 @@ const handler = NextAuth({
           throw new Error("Account exists via Google. Use Google sign-in.");
         }
 
-        if (!user.verified) {
-          throw new Error("Please verify your email first.");
-        }
+        // ✅ REMOVED: Email verification check - we'll verify with code instead
+        // Users can sign in, but will be redirected to verify-code page
 
         const isValid = await bcrypt.compare(
           credentials.password,
@@ -70,7 +63,7 @@ const handler = NextAuth({
         return {
           id: user._id.toString(),
           email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
+          name: user.email, // We don't collect names anymore
         };
       },
     }),
@@ -80,7 +73,7 @@ const handler = NextAuth({
     async signIn(params: any) {
       const { user, account, profile } = params;
 
-      // ✅ Allow credentials sign-in (handled by authorize())
+      // ✅ Allow credentials sign-in (device check happens after)
       if (account?.provider === "credentials") {
         return true;
       }
@@ -97,46 +90,55 @@ const handler = NextAuth({
             .findOne({ email: user.email });
 
           if (existingUser) {
-            // ✅ Check if user exists with different provider and is unverified
-            if (
-              existingUser.provider &&
-              existingUser.provider !== "google" &&
-              !existingUser.verified
-            ) {
-              // Block sign-in and show error
-              return "/auth/signin?error=Please verify your email first or use your original sign-in method";
-            }
-
-            // Update existing user with Google info
+            // ✅ Update existing user with Google info
             await db.collection("users").updateOne(
               { email: user.email },
               {
                 $set: {
-                  firstName: googleProfile.given_name || existingUser.firstName,
-                  lastName: googleProfile.family_name || existingUser.lastName,
                   image: googleProfile.picture || existingUser.image,
                   emailVerified: new Date(),
-                  provider: "google", // Update to Google provider
-                  verified: true, // Mark as verified
+                  provider: "google",
+                  updatedAt: new Date(),
+                  // ❌ DO NOT set verified: true - they need to verify with code
                 },
               }
             );
+
+            user.id = existingUser._id.toString();
           } else {
-            // Create new user for Google sign-in
+            // ✅ Create new user for Google sign-in
             const newUser = await db.collection("users").insertOne({
               email: user.email,
-              firstName: googleProfile.given_name || "",
-              lastName: googleProfile.family_name || "",
               image: googleProfile.picture || null,
               emailVerified: new Date(),
               createdAt: new Date(),
+              updatedAt: new Date(),
               provider: "google",
-              verified: true,
+              verified: false, // ✅ NOT verified yet - needs code
+              trustedDevices: [],
             });
 
-            // Store the new user ID for account linking
             user.id = newUser.insertedId.toString();
           }
+
+          // ✅ Generate and send verification code
+          const verificationCode = generateVerificationCode();
+          const codeExpiry = getCodeExpiry();
+
+          await db.collection("users").updateOne(
+            { email: user.email },
+            {
+              $set: {
+                verificationCode,
+                verificationCodeExpiry: codeExpiry,
+                verificationAttempts: 0,
+              },
+            }
+          );
+
+          // ✅ Send verification code email
+          // TODO: Implement email sending here
+          // await sendVerificationCodeEmail(user.email, verificationCode);
 
           // ✅ Store/update Google OAuth account info
           const existingAccount = await db.collection("accounts").findOne({
@@ -145,7 +147,6 @@ const handler = NextAuth({
           });
 
           if (existingAccount) {
-            // Update existing account tokens
             await db.collection("accounts").updateOne(
               { _id: existingAccount._id },
               {
@@ -160,7 +161,6 @@ const handler = NextAuth({
               }
             );
           } else {
-            // Create new account record
             const userId = existingUser?._id || new ObjectId(user.id);
             await db.collection("accounts").insertOne({
               userId: userId,
@@ -176,7 +176,10 @@ const handler = NextAuth({
             });
           }
 
-          return true;
+          // ✅ Redirect to verification code page
+          return `/auth/verify-code?email=${encodeURIComponent(
+            user.email!
+          )}&returnUrl=/dashboard`;
         } catch (error) {
           if (process.env.NODE_ENV === "development") {
             console.error("Google sign-in error:", error);
@@ -185,28 +188,19 @@ const handler = NextAuth({
         }
       }
 
-      // Default: allow sign-in
       return true;
     },
 
     async jwt({ token, user, account }) {
-      // Store complete user info in JWT on first sign-in
       if (user) {
         token.sub = user.id;
-
-        // Parse name if it's a full name string
-        const nameParts = user.name?.split(" ") || [];
-        token.firstName = nameParts[0] || "";
-        token.lastName = nameParts.slice(1).join(" ") || "";
         token.email = user.email;
         token.image = user.image;
       }
 
-      // Refresh user data from DB periodically with correct ObjectId query
-      // This ensures name changes reflect without re-login
+      // ✅ Refresh user data from DB
       if (token.sub && !user) {
         try {
-          // Only refresh if token.sub is a valid ObjectId string (24 hex chars)
           if (
             typeof token.sub === "string" &&
             /^[0-9a-fA-F]{24}$/.test(token.sub)
@@ -219,14 +213,11 @@ const handler = NextAuth({
             });
 
             if (dbUser) {
-              token.firstName = dbUser.firstName;
-              token.lastName = dbUser.lastName;
               token.email = dbUser.email;
               token.image = dbUser.image;
             }
           }
         } catch (error) {
-          // If ObjectId conversion fails or DB error, keep existing token data
           if (process.env.NODE_ENV === "development") {
             console.error("JWT refresh error:", error);
           }
@@ -237,14 +228,11 @@ const handler = NextAuth({
     },
 
     async session({ session, token }) {
-      // Build session from token data
       if (token?.sub) {
         session.user.id = token.sub;
         session.user.email = token.email as string;
-        session.user.name =
-          `${token.firstName || ""} ${token.lastName || ""}`.trim() ||
-          undefined;
         session.user.image = (token.image as string) || undefined;
+        session.user.name = token.email as string; // Use email as name
       }
       return session;
     },
@@ -253,12 +241,13 @@ const handler = NextAuth({
   pages: {
     signIn: "/auth/signin",
     error: "/auth/error",
-    verifyRequest: "/auth/verify",
   },
+
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // ✅ ADDED: 30 days session
+    maxAge: 30 * 24 * 60 * 60, // 30 days until user logs out
   },
+
   secret: process.env.NEXTAUTH_SECRET,
 });
 
