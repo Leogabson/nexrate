@@ -1,17 +1,11 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Shield, Zap, Brain, UserPlus } from "lucide-react";
 import Image from "next/image";
 import Script from "next/script";
-
-declare global {
-  interface Window {
-    hcaptcha: any;
-  }
-}
 
 export default function SigninPage() {
   const router = useRouter();
@@ -23,7 +17,7 @@ export default function SigninPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
-  const captchaRef = useRef<string>("");
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -34,21 +28,30 @@ export default function SigninPage() {
     }
   }, [status]);
 
-  const onCaptchaVerify = (token: string) => {
-    setCaptchaToken(token);
-    captchaRef.current = token;
-  };
+  // Listen for hCaptcha events
+  useEffect(() => {
+    const handleCaptchaVerify = (e: any) => {
+      setCaptchaToken(e.detail);
+    };
 
-  const onCaptchaExpire = () => {
-    setCaptchaToken("");
-    captchaRef.current = "";
-  };
+    const handleCaptchaExpire = () => {
+      setCaptchaToken("");
+    };
+
+    window.addEventListener("hcaptcha-verify", handleCaptchaVerify);
+    window.addEventListener("hcaptcha-expire", handleCaptchaExpire);
+
+    return () => {
+      window.removeEventListener("hcaptcha-verify", handleCaptchaVerify);
+      window.removeEventListener("hcaptcha-expire", handleCaptchaExpire);
+    };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
-    if (!captchaRef.current) {
+    if (!captchaToken) {
       setError("Please complete the captcha verification.");
       return;
     }
@@ -60,7 +63,7 @@ export default function SigninPage() {
       const captchaRes = await fetch("/api/auth/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: captchaRef.current }),
+        body: JSON.stringify({ token: captchaToken }),
       });
 
       if (!captchaRes.ok) {
@@ -70,7 +73,6 @@ export default function SigninPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
         return;
       }
 
@@ -92,7 +94,6 @@ export default function SigninPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
       } else if (res?.ok) {
         // Check if device needs verification
         const deviceCheckRes = await fetch("/api/auth/check-device", {
@@ -121,7 +122,6 @@ export default function SigninPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
@@ -130,14 +130,13 @@ export default function SigninPage() {
         window.hcaptcha.reset();
       }
       setCaptchaToken("");
-      captchaRef.current = "";
     }
   };
 
   const handleGoogleSignin = async () => {
     setError("");
 
-    if (!captchaRef.current) {
+    if (!captchaToken) {
       setError("Please complete the captcha verification.");
       return;
     }
@@ -147,7 +146,7 @@ export default function SigninPage() {
       const captchaRes = await fetch("/api/auth/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: captchaRef.current }),
+        body: JSON.stringify({ token: captchaToken }),
       });
 
       if (!captchaRes.ok) {
@@ -156,12 +155,10 @@ export default function SigninPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
         return;
       }
 
       // Proceed with Google signin
-      // Note: The callback will handle sending verification code
       signIn("google", { callbackUrl: "/auth/verify-code" });
     } catch (err) {
       setError("Failed to initiate Google signin.");
@@ -169,7 +166,6 @@ export default function SigninPage() {
         window.hcaptcha.reset();
       }
       setCaptchaToken("");
-      captchaRef.current = "";
     }
   };
 
@@ -183,7 +179,12 @@ export default function SigninPage() {
 
   return (
     <>
-      <Script src="https://js.hcaptcha.com/1/api.js" async defer />
+      <Script
+        src="https://js.hcaptcha.com/1/api.js"
+        onLoad={() => setCaptchaLoaded(true)}
+        async
+        defer
+      />
       <div className="min-h-screen flex flex-col lg:flex-row">
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
           <div className="absolute inset-0">
@@ -418,14 +419,6 @@ export default function SigninPage() {
             function onCaptchaExpire() {
               window.dispatchEvent(new CustomEvent('hcaptcha-expire'));
             }
-            window.addEventListener('hcaptcha-verify', (e) => {
-              const event = new CustomEvent('captcha-verified', { detail: e.detail });
-              window.dispatchEvent(event);
-            });
-            window.addEventListener('hcaptcha-expire', () => {
-              const event = new CustomEvent('captcha-expired');
-              window.dispatchEvent(event);
-            });
           `,
         }}
       />

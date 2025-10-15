@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import {
@@ -18,7 +18,11 @@ import Script from "next/script";
 
 declare global {
   interface Window {
-    hcaptcha: any;
+    hcaptcha: {
+      reset: () => void;
+      execute: () => void;
+      render: (container: string | HTMLElement, params: any) => void;
+    };
   }
 }
 
@@ -37,7 +41,7 @@ export default function SignupPage() {
   const [error, setError] = useState("");
   const [agreeToTerms, setAgreeToTerms] = useState(false);
   const [captchaToken, setCaptchaToken] = useState("");
-  const captchaRef = useRef<string>("");
+  const [captchaLoaded, setCaptchaLoaded] = useState(false);
 
   const countries = [
     { name: "Nigeria", flag: "🇳🇬" },
@@ -49,15 +53,22 @@ export default function SignupPage() {
     { name: "South Africa", flag: "🇿🇦" },
   ];
 
-  const onCaptchaVerify = (token: string) => {
-    setCaptchaToken(token);
-    captchaRef.current = token;
-  };
+  // Listen for hCaptcha events
+  useEffect(() => {
+    // Define global callback functions
+    (window as any).onCaptchaVerify = (token: string) => {
+      setCaptchaToken(token);
+    };
 
-  const onCaptchaExpire = () => {
-    setCaptchaToken("");
-    captchaRef.current = "";
-  };
+    (window as any).onCaptchaExpire = () => {
+      setCaptchaToken("");
+    };
+
+    return () => {
+      delete (window as any).onCaptchaVerify;
+      delete (window as any).onCaptchaExpire;
+    };
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -79,7 +90,7 @@ export default function SignupPage() {
       setError("You must agree to the Terms of Service and Privacy Policy.");
       return;
     }
-    if (!captchaRef.current) {
+    if (!captchaToken) {
       setError("Please complete the captcha verification.");
       return;
     }
@@ -91,7 +102,7 @@ export default function SignupPage() {
       const captchaRes = await fetch("/api/auth/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: captchaRef.current }),
+        body: JSON.stringify({ token: captchaToken }),
       });
 
       if (!captchaRes.ok) {
@@ -101,7 +112,6 @@ export default function SignupPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
         return;
       }
 
@@ -131,7 +141,6 @@ export default function SignupPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
       }
     } catch (err) {
       setError("Something went wrong. Please try again later.");
@@ -139,7 +148,6 @@ export default function SignupPage() {
         window.hcaptcha.reset();
       }
       setCaptchaToken("");
-      captchaRef.current = "";
     } finally {
       setLoading(false);
     }
@@ -148,7 +156,7 @@ export default function SignupPage() {
   const handleGoogleSignup = async () => {
     setError("");
 
-    if (!captchaRef.current) {
+    if (!captchaToken) {
       setError("Please complete the captcha verification.");
       return;
     }
@@ -163,7 +171,7 @@ export default function SignupPage() {
       const captchaRes = await fetch("/api/auth/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ token: captchaRef.current }),
+        body: JSON.stringify({ token: captchaToken }),
       });
 
       if (!captchaRes.ok) {
@@ -172,7 +180,6 @@ export default function SignupPage() {
           window.hcaptcha.reset();
         }
         setCaptchaToken("");
-        captchaRef.current = "";
         return;
       }
 
@@ -186,13 +193,17 @@ export default function SignupPage() {
         window.hcaptcha.reset();
       }
       setCaptchaToken("");
-      captchaRef.current = "";
     }
   };
 
   return (
     <>
-      <Script src="https://js.hcaptcha.com/1/api.js" async defer />
+      <Script
+        src="https://js.hcaptcha.com/1/api.js"
+        onLoad={() => setCaptchaLoaded(true)}
+        async
+        defer
+      />
       <div className="min-h-screen flex flex-col lg:flex-row">
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
           <div className="absolute inset-0">
@@ -271,7 +282,6 @@ export default function SignupPage() {
                 href="/auth/signin"
                 className="text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1"
               >
-                {" "}
                 <LogIn size={18} />
                 <span> Log In</span>
               </a>
@@ -412,7 +422,7 @@ export default function SignupPage() {
                 >
                   By selecting "Create Account", you agree to our{" "}
                   <a
-                    href="/terms-of-service-"
+                    href="/terms-of-service"
                     className="text-cyan-400 hover:underline"
                   >
                     Terms of Service
@@ -431,6 +441,7 @@ export default function SignupPage() {
                 <div
                   className="h-captcha"
                   data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
+                  data-theme="dark"
                   data-callback="onCaptchaVerify"
                   data-expired-callback="onCaptchaExpire"
                 ></div>
@@ -499,14 +510,6 @@ export default function SignupPage() {
             function onCaptchaExpire() {
               window.dispatchEvent(new CustomEvent('hcaptcha-expire'));
             }
-            window.addEventListener('hcaptcha-verify', (e) => {
-              const event = new CustomEvent('captcha-verified', { detail: e.detail });
-              window.dispatchEvent(event);
-            });
-            window.addEventListener('hcaptcha-expire', () => {
-              const event = new CustomEvent('captcha-expired');
-              window.dispatchEvent(event);
-            });
           `,
         }}
       />
