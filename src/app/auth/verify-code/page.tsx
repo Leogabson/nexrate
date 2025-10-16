@@ -5,14 +5,13 @@ import {
   useEffect,
   useRef,
   type KeyboardEvent,
-  type ClipboardEvent,
-  type ChangeEvent,
+  Suspense,
 } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Shield, Zap, Brain, Mail, RefreshCw } from "lucide-react";
 import Image from "next/image";
 
-export default function VerifyCodePage() {
+function VerifyCodeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams?.get("email") || "";
@@ -342,5 +341,22 @@ export default function VerifyCodePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyCodePage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-cyan-500 mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading...</p>
+          </div>
+        </div>
+      }
+    >
+      <VerifyCodeContent />
+    </Suspense>
   );
 }
