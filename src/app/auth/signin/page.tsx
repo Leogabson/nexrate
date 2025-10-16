@@ -334,6 +334,7 @@ export default function SigninPage() {
               <div className="flex justify-center p-4 border border-gray-600 rounded-lg bg-gray-800/30">
                 <div
                   className="h-captcha"
+                  data-theme="dark"
                   data-sitekey={process.env.NEXT_PUBLIC_HCAPTCHA_SITE_KEY}
                   data-callback="onCaptchaVerify"
                   data-expired-callback="onCaptchaExpire"
