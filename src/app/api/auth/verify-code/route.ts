@@ -144,6 +144,8 @@ export async function POST(req: NextRequest) {
         success: true,
         message: "Verification successful",
         deviceTrusted: trustDevice || false,
+        // ✅ Return email so frontend can auto-sign in the user
+        email: email,
       },
       { status: 200 }
     );

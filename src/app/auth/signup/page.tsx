@@ -183,9 +183,11 @@ export default function SignupPage() {
         return;
       }
 
-      // Proceed with Google signup
+      // ✅ FIXED: Redirect Google users to dashboard directly
+      // Google users don't need email verification (already verified by Google)
+      // Device verification will be handled by NextAuth callbacks
       signIn("google", {
-        callbackUrl: `${window.location.origin}/auth/verify-code`,
+        callbackUrl: `${window.location.origin}/dashboard`,
       });
     } catch (err) {
       setError("Failed to initiate Google signup.");

@@ -17,7 +17,6 @@ export default function SigninPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [captchaToken, setCaptchaToken] = useState("");
-  const [captchaLoaded, setCaptchaLoaded] = useState(false);
 
   useEffect(() => {
     if (status === "loading") return;
@@ -28,22 +27,19 @@ export default function SigninPage() {
     }
   }, [status]);
 
-  // Listen for hCaptcha events
+  // Define global callbacks before hCaptcha loads
   useEffect(() => {
-    const handleCaptchaVerify = (e: any) => {
-      setCaptchaToken(e.detail);
+    (window as any).onCaptchaVerify = (token: string) => {
+      setCaptchaToken(token);
     };
 
-    const handleCaptchaExpire = () => {
+    (window as any).onCaptchaExpire = () => {
       setCaptchaToken("");
     };
 
-    window.addEventListener("hcaptcha-verify", handleCaptchaVerify);
-    window.addEventListener("hcaptcha-expire", handleCaptchaExpire);
-
     return () => {
-      window.removeEventListener("hcaptcha-verify", handleCaptchaVerify);
-      window.removeEventListener("hcaptcha-expire", handleCaptchaExpire);
+      delete (window as any).onCaptchaVerify;
+      delete (window as any).onCaptchaExpire;
     };
   }, []);
 
@@ -59,7 +55,6 @@ export default function SigninPage() {
     setLoading(true);
 
     try {
-      // Verify captcha first
       const captchaRes = await fetch("/api/auth/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -69,14 +64,13 @@ export default function SigninPage() {
       if (!captchaRes.ok) {
         setError("Captcha verification failed. Please try again.");
         setLoading(false);
-        if (window.hcaptcha) {
-          window.hcaptcha.reset();
+        if ((window as any).hcaptcha) {
+          (window as any).hcaptcha.reset();
         }
         setCaptchaToken("");
         return;
       }
 
-      // Attempt signin
       const res = await signIn("credentials", {
         redirect: false,
         email,
@@ -90,12 +84,11 @@ export default function SigninPage() {
             : res.error
         );
         setLoading(false);
-        if (window.hcaptcha) {
-          window.hcaptcha.reset();
+        if ((window as any).hcaptcha) {
+          (window as any).hcaptcha.reset();
         }
         setCaptchaToken("");
       } else if (res?.ok) {
-        // Check if device needs verification
         const deviceCheckRes = await fetch("/api/auth/check-device", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -105,29 +98,27 @@ export default function SigninPage() {
         const deviceData = await deviceCheckRes.json();
 
         if (deviceData.needsVerification) {
-          // Redirect to verification code page
           router.push(
             `/auth/verify-code?email=${encodeURIComponent(
               email
             )}&returnUrl=/dashboard`
           );
         } else {
-          // Device is trusted, proceed to dashboard
           router.push("/dashboard");
         }
       } else {
         setError("An unexpected error occurred. Please try again.");
         setLoading(false);
-        if (window.hcaptcha) {
-          window.hcaptcha.reset();
+        if ((window as any).hcaptcha) {
+          (window as any).hcaptcha.reset();
         }
         setCaptchaToken("");
       }
     } catch (err) {
       setError("Something went wrong. Please try again.");
       setLoading(false);
-      if (window.hcaptcha) {
-        window.hcaptcha.reset();
+      if ((window as any).hcaptcha) {
+        (window as any).hcaptcha.reset();
       }
       setCaptchaToken("");
     }
@@ -142,7 +133,6 @@ export default function SigninPage() {
     }
 
     try {
-      // Verify captcha first
       const captchaRes = await fetch("/api/auth/verify-captcha", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -151,19 +141,18 @@ export default function SigninPage() {
 
       if (!captchaRes.ok) {
         setError("Captcha verification failed. Please try again.");
-        if (window.hcaptcha) {
-          window.hcaptcha.reset();
+        if ((window as any).hcaptcha) {
+          (window as any).hcaptcha.reset();
         }
         setCaptchaToken("");
         return;
       }
 
-      // Proceed with Google signin
-      signIn("google", { callbackUrl: "/auth/verify-code" });
+      signIn("google", { callbackUrl: "/dashboard" });
     } catch (err) {
       setError("Failed to initiate Google signin.");
-      if (window.hcaptcha) {
-        window.hcaptcha.reset();
+      if ((window as any).hcaptcha) {
+        (window as any).hcaptcha.reset();
       }
       setCaptchaToken("");
     }
@@ -179,12 +168,7 @@ export default function SigninPage() {
 
   return (
     <>
-      <Script
-        src="https://js.hcaptcha.com/1/api.js"
-        onLoad={() => setCaptchaLoaded(true)}
-        async
-        defer
-      />
+      <Script src="https://js.hcaptcha.com/1/api.js" strategy="lazyOnload" />
       <div className="min-h-screen flex flex-col lg:flex-row">
         <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-gray-900 via-black to-gray-800 relative overflow-hidden">
           <div className="absolute inset-0">
@@ -409,19 +393,6 @@ export default function SigninPage() {
           </div>
         </div>
       </div>
-
-      <script
-        dangerouslySetInnerHTML={{
-          __html: `
-            function onCaptchaVerify(token) {
-              window.dispatchEvent(new CustomEvent('hcaptcha-verify', { detail: token }));
-            }
-            function onCaptchaExpire() {
-              window.dispatchEvent(new CustomEvent('hcaptcha-expire'));
-            }
-          `,
-        }}
-      />
     </>
   );
 }

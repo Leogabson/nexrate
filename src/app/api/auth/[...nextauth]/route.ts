@@ -9,7 +9,7 @@ import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
-import { ObjectId } from "mongodb"; // ✅ ADDED: Import ObjectId for proper queries
+import { ObjectId } from "mongodb";
 
 // Extend the Profile type to include Google-specific fields
 interface GoogleProfile extends Profile {
@@ -19,9 +19,6 @@ interface GoogleProfile extends Profile {
 }
 
 const handler = NextAuth({
-  // ✅ REMOVED: MongoDBAdapter - incompatible with JWT strategy
-  // We'll manage user/account creation manually in callbacks
-
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -71,7 +68,8 @@ const handler = NextAuth({
         return {
           id: user._id.toString(),
           email: user.email,
-          name: `${user.firstName} ${user.lastName}`,
+          name: user.email, // ✅ FIXED: Use email as name (no firstName/lastName)
+          image: user.image || null,
         };
       },
     }),
@@ -108,31 +106,30 @@ const handler = NextAuth({
               return "/auth/signin?error=Please verify your email first or use your original sign-in method";
             }
 
-            // Update existing user with Google info
+            // ✅ Update existing user with Google info
             await db.collection("users").updateOne(
               { email: user.email },
               {
                 $set: {
-                  firstName: googleProfile.given_name || existingUser.firstName,
-                  lastName: googleProfile.family_name || existingUser.lastName,
                   image: googleProfile.picture || existingUser.image,
                   emailVerified: new Date(),
                   provider: "google", // Update to Google provider
-                  verified: true, // Mark as verified
+                  verified: true, // ✅ Mark as verified (Google already verified email)
+                  updatedAt: new Date(),
                 },
               }
             );
           } else {
-            // Create new user for Google sign-in
+            // ✅ Create new user for Google sign-in
             const newUser = await db.collection("users").insertOne({
               email: user.email,
-              firstName: googleProfile.given_name || "",
-              lastName: googleProfile.family_name || "",
               image: googleProfile.picture || null,
               emailVerified: new Date(),
               createdAt: new Date(),
+              updatedAt: new Date(),
               provider: "google",
-              verified: true,
+              verified: true, // ✅ Google users are auto-verified
+              trustedDevices: [], // ✅ Initialize empty trusted devices
             });
 
             // Store the new user ID for account linking
@@ -157,6 +154,7 @@ const handler = NextAuth({
                   scope: account.scope,
                   token_type: account.token_type,
                   id_token: account.id_token,
+                  updatedAt: new Date(),
                 },
               }
             );
@@ -174,6 +172,7 @@ const handler = NextAuth({
               scope: account.scope,
               token_type: account.token_type,
               id_token: account.id_token,
+              createdAt: new Date(),
             });
           }
 
@@ -191,20 +190,16 @@ const handler = NextAuth({
     },
 
     async jwt({ token, user, account }) {
-      // Store complete user info in JWT on first sign-in
+      // ✅ Store user info in JWT on first sign-in
       if (user) {
         token.sub = user.id;
-
-        // Parse name if it's a full name string
-        const nameParts = user.name?.split(" ") || [];
-        token.firstName = nameParts[0] || "";
-        token.lastName = nameParts.slice(1).join(" ") || "";
         token.email = user.email;
+        token.name = user.name || user.email; // ✅ Fallback to email if no name
         token.image = user.image;
       }
 
-      // Refresh user data from DB periodically with correct ObjectId query
-      // This ensures name changes reflect without re-login
+      // ✅ Refresh user data from DB periodically
+      // This ensures changes reflect without re-login
       if (token.sub && !user) {
         try {
           // Only refresh if token.sub is a valid ObjectId string (24 hex chars)
@@ -220,9 +215,8 @@ const handler = NextAuth({
             });
 
             if (dbUser) {
-              token.firstName = dbUser.firstName;
-              token.lastName = dbUser.lastName;
               token.email = dbUser.email;
+              token.name = dbUser.email; // ✅ Use email as name
               token.image = dbUser.image;
             }
           }
@@ -238,13 +232,11 @@ const handler = NextAuth({
     },
 
     async session({ session, token }) {
-      // Build session from token data
+      // ✅ Build session from token data
       if (token?.sub) {
         session.user.id = token.sub;
         session.user.email = token.email as string;
-        session.user.name =
-          `${token.firstName || ""} ${token.lastName || ""}`.trim() ||
-          undefined;
+        session.user.name = (token.name as string) || (token.email as string); // ✅ Fallback to email
         session.user.image = (token.image as string) || undefined;
       }
       return session;
@@ -258,7 +250,7 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // ✅ ADDED: 30 days session
+    maxAge: 30 * 24 * 60 * 60, // 30 days session
   },
   secret: process.env.NEXTAUTH_SECRET,
 });

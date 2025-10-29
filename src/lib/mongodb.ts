@@ -1,5 +1,6 @@
 // src/lib/mongodb.js
 import { MongoClient } from "mongodb";
+import { setupDatabase } from "@/lib/db-schema";
 
 const uri = process.env.MONGODB_URI as string | undefined;
 

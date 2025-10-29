@@ -73,7 +73,7 @@ export async function POST(request: Request) {
       <h1 style="margin: 0; color: #333;">Password Reset Request</h1>
     </div>
     <div class="content">
-      <p>Hi ${user.firstName || "there"},</p>
+      <p>Hi there,</p>
       <p>We received a request to reset your password for your NexRate account.</p>
       <p>Click the button below to reset your password. This link will expire in 1 hour.</p>
       <p style="text-align: center; margin: 30px 0;">
