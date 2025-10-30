@@ -1,10 +1,5 @@
 // src/app/api/auth/[...nextauth]/route.ts
-import NextAuth, {
-  type DefaultSession,
-  type Profile,
-  type Account,
-  type NextAuthOptions,
-} from "next-auth";
+import NextAuth, { type Profile } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
 import clientPromise from "@/lib/mongodb";
@@ -266,4 +261,4 @@ const handler = NextAuth({
 export { handler as GET, handler as POST };
 
 // Export authOptions for use in other API routes
-export const authOptions = handler;
+// export const authOptions = handler;
