@@ -148,7 +148,7 @@ export default function SigninPage() {
         return;
       }
 
-      signIn("google", { callbackUrl: "/dashboard" });
+      signIn("google", { callbackUrl: "/auth/device-check" });
     } catch (err) {
       setError("Failed to initiate Google signin.");
       if ((window as any).hcaptcha) {

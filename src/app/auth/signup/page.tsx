@@ -65,8 +65,8 @@ export default function SignupPage() {
     };
 
     return () => {
-      delete (window as any).onCaptchaVerify;
-      delete (window as any).onCaptchaExpire;
+      (window as any).onCaptchaVerify = undefined;
+      (window as any).onCaptchaExpire = undefined;
     };
   }, []);
 
@@ -183,11 +183,9 @@ export default function SignupPage() {
         return;
       }
 
-      // ✅ FIXED: Redirect Google users to dashboard directly
-      // Google users don't need email verification (already verified by Google)
-      // Device verification will be handled by NextAuth callbacks
+      // ✅ UPDATED: Redirect to device-check page after Google OAuth
       signIn("google", {
-        callbackUrl: `${window.location.origin}/dashboard`,
+        callbackUrl: "/auth/device-check",
       });
     } catch (err) {
       setError("Failed to initiate Google signup.");

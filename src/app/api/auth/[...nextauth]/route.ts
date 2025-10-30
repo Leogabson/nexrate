@@ -19,6 +19,7 @@ interface GoogleProfile extends Profile {
 }
 
 const handler = NextAuth({
+  debug: process.env.NODE_ENV === "development",
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -78,6 +79,13 @@ const handler = NextAuth({
   callbacks: {
     async signIn(params: any) {
       const { user, account, profile } = params;
+
+      // logging
+      console.log("🔍SignIn Callback:", {
+        provider: account?.provider,
+        email: user?.email,
+        hasProfile: !!profile,
+      });
 
       // ✅ Allow credentials sign-in (handled by authorize())
       if (account?.provider === "credentials") {
