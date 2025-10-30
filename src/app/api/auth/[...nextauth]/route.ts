@@ -183,6 +183,9 @@ const handler = NextAuth({
         } catch (error) {
           if (process.env.NODE_ENV === "development") {
             console.error("Google sign-in error:", error);
+            return `/auth/signin?error=${encodeURIComponent(
+              error instanceof Error ? error.message : "Sign in failed"
+            )}`;
           }
           return "/auth/signin?error=Sign in failed. Please try again";
         }
